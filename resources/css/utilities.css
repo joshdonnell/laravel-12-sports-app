@@ -1,0 +1,72 @@
+@layer utilities {
+  .overflow-y-scroll {
+    /* Smooth scrolling on IOS overflow containers */
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .center-xy {
+    /* Transform helpers */
+    @apply absolute left-6/12 top-6/12 -translate-x-1/2 -translate-y-1/2;
+  }
+
+  .center-y {
+    @apply absolute top-6/12 -translate-y-1/2;
+  }
+
+  .center-x {
+    @apply absolute left-6/12 -translate-x-1/2;
+  }
+
+  .object-cover-absolute {
+    /* Object cover helpers */
+    @apply absolute inset-0 h-full w-full object-cover object-center;
+  }
+
+  .object-contain-absolute {
+    @apply absolute inset-0 h-full w-full object-contain object-center;
+  }
+
+  .out-container {
+    /* Pulls an element outside the container and to the edge of the left & right of the screen */
+    @apply relative left-6/12 -ml-[50vw] w-screen px-0;
+  }
+
+  .stroke {
+    /* Stroke text */
+    @apply inline-block text-[inherit];
+
+    /* instead of transparent for dodgy safari */
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: currentcolor;
+  }
+
+  .writing-mode-vertical {
+    /*  Vertical text  */
+    writing-mode: vertical-lr;
+  }
+
+  .btn-cover {
+    /* Expand link to cover element */
+    &::before {
+      content: '';
+      @apply absolute inset-0 z-10 h-full w-full;
+    }
+  }
+
+  .no-capsize {
+    /* Remove capsize margins */
+    &::before,
+    &::after {
+      @apply hidden;
+    }
+  }
+
+  .hide-scrollbar {
+    /* Hide Scrollbar */
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}

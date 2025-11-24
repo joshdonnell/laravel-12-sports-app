@@ -1,0 +1,3 @@
+.form-textarea {
+  @apply form-input h-120;
+}

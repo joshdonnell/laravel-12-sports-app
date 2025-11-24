@@ -1,0 +1,24 @@
+[
+  {
+    "name": {
+      "common": "Greece",
+      "official": "Hellenic Republic"
+    },
+    "cca2": "GR",
+    "flags": {
+      "svg": "https://flagcdn.com/gr.svg",
+      "png": "https://flagcdn.com/gr.svg"
+    }
+  },
+  {
+    "name": {
+      "common": "United States",
+      "official": "United States of America"
+    },
+    "cca2": "US",
+    "flags": {
+      "svg": "https://flagcdn.com/us.svg",
+      "png": "https://flagcdn.com/us.svg"
+    }
+  }
+]

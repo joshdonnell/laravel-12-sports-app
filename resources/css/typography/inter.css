@@ -1,0 +1,25 @@
+@layer components {
+  .heading-xl {
+    @apply font-inter text-[21px] leading-[25px];
+  }
+
+  .heading-lg {
+    @apply font-inter text-[16px] leading-[20px];
+  }
+
+  .heading-md {
+    @apply font-inter text-[14px] leading-[17px];
+  }
+
+  .copy {
+    @apply font-inter text-[14px] leading-[22px];
+  }
+
+  .copy-sm {
+    @apply font-inter text-[12px] leading-[14px];
+  }
+
+  .copy-xs {
+    @apply font-inter text-[9px] leading-[11px];
+  }
+}

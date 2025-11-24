@@ -1,0 +1,7 @@
+.form-checkbox {
+  @apply h-15 w-15;
+
+  &:focus {
+    @apply ring-2 ring-offset-1;
+  }
+}

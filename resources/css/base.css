@@ -1,0 +1,19 @@
+img {
+  @apply block h-auto w-full max-w-[none] border-none;
+}
+
+img:not([src]):not([srcset]) {
+  @apply invisible;
+}
+
+picture {
+  @apply block;
+}
+
+video {
+  @apply w-full;
+}
+
+* {
+  @apply box-border;
+}

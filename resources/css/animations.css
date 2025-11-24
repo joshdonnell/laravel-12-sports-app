@@ -1,0 +1,5 @@
+@layer components {
+  .default-transition {
+    transition: all 0.3s cubic-bezier(0.77, 0.25, 0.11, 0.92);
+  }
+}

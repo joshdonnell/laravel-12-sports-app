@@ -1,0 +1,11 @@
+.btn-primary {
+  @apply default-transition inline-block rounded-[6px] bg-blue-200 px-25 py-[14px] text-[14px] leading-[16px] text-white;
+
+  &:hover {
+    @apply bg-blue-300 text-white;
+  }
+
+  &:disabled {
+    @apply cursor-not-allowed bg-grey-200 text-grey-300;
+  }
+}

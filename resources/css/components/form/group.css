@@ -1,0 +1,9 @@
+.form-group {
+  .form-group__instructions {
+    @apply text-[12px] font-medium leading-[16px] text-black;
+  }
+
+  .form-group__error {
+    @apply block text-[12px] font-medium leading-[16px] text-red-error;
+  }
+}

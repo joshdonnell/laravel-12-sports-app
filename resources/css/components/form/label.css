@@ -1,0 +1,3 @@
+.form-label {
+  @apply heading-md block font-medium text-black;
+}

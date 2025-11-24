@@ -1,0 +1,25 @@
+@layer components {
+  .container {
+    @apply mx-auto w-full px-20 md:px-[28px];
+  }
+
+  .row {
+    @apply -mx-[4px] md:-mx-[8px] xl:-mx-10;
+  }
+
+  .column {
+    @apply px-[4px] md:px-[8px] xl:px-10;
+  }
+
+  .gap-column {
+    @apply gap-[12px] md:gap-[16px] xl:gap-20;
+  }
+
+  .gap-x-column {
+    @apply gap-x-[12px] md:gap-x-[16px] xl:gap-x-20;
+  }
+
+  .gap-y-column {
+    @apply gap-y-[12px] md:gap-y-[16px] xl:gap-y-20;
+  }
+}

@@ -1,0 +1,19 @@
+.form-radio {
+  @apply h-20 w-20;
+
+  &:active,
+  &:focus {
+    @apply bg-black shadow-none outline-none ring-0 ring-offset-0;
+  }
+
+  &:checked,
+  &:checked:hover,
+  &:checked:focus {
+    @apply bg-black;
+  }
+
+  &[aria-disabled='true'],
+  &[disabled] {
+    @apply cursor-not-allowed border-[#CACED7];
+  }
+}
