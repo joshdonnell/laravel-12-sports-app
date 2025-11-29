@@ -119,7 +119,7 @@ watch(
         <div v-if="!manualSetupKey"><span>Loading...</span></div>
 
         <template v-else>
-          <FormText
+          <FormInput
             id="manual-setup-key"
             name="manual-setup-key"
             readonly
@@ -148,7 +148,7 @@ watch(
             :error="formErrors?.confirmTwoFactorAuthentication"
             label="Code"
           >
-            <FormText
+            <FormInput
               id="code"
               required
               type="number"

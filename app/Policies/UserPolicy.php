@@ -31,7 +31,7 @@ final readonly class UserPolicy
             return true;
         }
 
-        return $model->sport_id === $user->sport_id && $user->can(Permission::UPDATE_USER);
+        return $model->sport()->is($user->sport) && $user->can(Permission::UPDATE_USER);
     }
 
     public function update(User $user, User $model): bool
@@ -40,7 +40,7 @@ final readonly class UserPolicy
             return true;
         }
 
-        return $model->sport_id === $user->sport_id && $user->can(Permission::UPDATE_USER);
+        return $model->sport()->is($user->sport) && $user->can(Permission::UPDATE_USER);
     }
 
     public function destroy(User $user, User $model): bool
@@ -49,6 +49,6 @@ final readonly class UserPolicy
             return true;
         }
 
-        return $model->sport_id === $user->sport_id && $user->can(Permission::DELETE_USER);
+        return $model->sport()->is($user->sport) && $user->can(Permission::DELETE_USER);
     }
 }

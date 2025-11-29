@@ -13,10 +13,6 @@ Route::middleware('guest')->group(function (): void {
     Route::redirect('/', 'login')->name('home');
 });
 
-Route::middleware(['auth', 'verified'])->group(function (): void {
-    Route::get('dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
-});
-
 Route::middleware('auth')->group(function (): void {
     // User Profile...
     Route::redirect('settings', '/settings/profile');
@@ -42,7 +38,10 @@ Route::middleware('auth')->group(function (): void {
 // Positions
 
 Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function (): void {
+    // Dashboard
     Route::get('/', fn () => Inertia::render('Dashboard'))->name('dashboard');
+
+    // Seasons
     Route::resource('seasons', SeasonController::class)->only(['index', 'create', 'store', 'edit', 'update']);
 });
 

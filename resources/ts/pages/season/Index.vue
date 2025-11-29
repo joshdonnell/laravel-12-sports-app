@@ -1,45 +1,69 @@
 <script setup lang="ts">
-import { create, edit } from '@/routes/seasons'
-import { Pagination, SharedData } from '@/types'
+import DashboardLayout from '@/layouts/DashboardLayout.vue'
+import { create, edit, index } from '@/routes/seasons'
+import type { Pagination } from '@/types'
+import { watchDebounced } from '@vueuse/core'
 
 interface Props {
   seasons: Pagination<App.Data.Season.SeasonData>
+  search?: string
 }
 
-defineProps<Props>()
-const page = usePage<SharedData>()
+const props = withDefaults(defineProps<Props>(), {
+  search: '',
+})
+
+defineOptions({ layout: DashboardLayout })
+
+const search = ref<string>(props.search)
+
+watchDebounced(
+  search,
+  () => {
+    router.visit(index(), {
+      only: ['seasons'],
+      data: {
+        search: search.value,
+      },
+      preserveState: true,
+    })
+  },
+  {
+    debounce: 300,
+  },
+)
 </script>
 
 <template>
-  <section class="py-100">
-    <div class="container flex flex-col gap-y-20">
-      <div class="flex items-center justify-between">
-        <h1 class="font-bold">All Seasons</h1>
+  <Head title="Seasons" />
 
-        <template v-if="page.props.auth.can['create-season']">
-          <BtnPrimary :href="create.url()">Create Season</BtnPrimary>
-        </template>
-      </div>
+  <section class="season-index">
+    <SeasonsFilters v-model="search" />
 
-      <hr />
+    <SharedHero
+      title="Seasons"
+      description="A list of all seasons."
+    />
 
-      <template v-if="seasons.data.length > 0">
-        <template
-          v-for="season in seasons.data"
-          :key="season.uuid"
-        >
-          <Link
-            v-if="page.props.auth.can['update-season']"
-            :href="edit.url({ season: season.uuid })"
-            >Edit - {{ season.name }}</Link
-          >
-          <p v-else>{{ season.name }} (No edit access)</p>
-        </template>
-      </template>
-
-      <template v-else>
-        <p>No Seasons Found</p>
-      </template>
-    </div>
+    <SharedResourceTable
+      :data="seasons"
+      :columns="[
+        {
+          label: 'Name',
+          field: 'name',
+        },
+        {
+          label: 'Season ID',
+          field: 'uuid',
+        },
+      ]"
+      create-text="Add season"
+      create-permission="create-season"
+      :create-endpoint="create.url()"
+      edit-permission="update-season"
+      :edit-endpoint="edit.url"
+      edit-field="uuid"
+      no-results="No Seasons found."
+    />
   </section>
 </template>

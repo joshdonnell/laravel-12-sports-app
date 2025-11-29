@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import infoIcon from '@/../svg/info.svg'
-import InlineSvg from 'vue-inline-svg'
 
 interface Props {
-  error: string | string[] | undefined
+  error?: string | string[] | undefined
   instructions?: string
   label?: string
   inputId?: string
@@ -13,6 +12,7 @@ withDefaults(defineProps<Props>(), {
   inputId: '',
   instructions: undefined,
   label: undefined,
+  error: undefined,
 })
 </script>
 

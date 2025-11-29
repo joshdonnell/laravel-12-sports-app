@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import { update } from '@/routes/seasons'
 
 interface Props {
@@ -6,39 +7,50 @@ interface Props {
 }
 
 defineProps<Props>()
+
+defineOptions({ layout: DashboardLayout })
 </script>
 
 <template>
-  <section class="py-100">
-    <div class="container space-y-40">
-      <h1 class="font-bold">Update - {{ season.name }}</h1>
+  <Head :title="`Edit ${season.name} Season`" />
 
-      <hr />
+  <section class="season-edit">
+    <SharedHero
+      :title="`Edit ${season.name} Season`"
+      :description="`Edit and update the ${season.name} season.`"
+    />
 
-      <Form
-        v-slot="{ processing, errors }"
-        v-bind="update.form({ season: season.uuid })"
-        class="space-y-10"
+    <Form
+      v-slot="{ processing, errors }"
+      v-bind="update.form({ season: season.uuid })"
+      class="form form--crud"
+    >
+      <FormGroup
+        :error="errors.name"
+        label="Name"
+        input-id="name"
+        class="column w-full lg:w-1/2"
       >
-        <FormGroup
-          input-id="name"
-          label="Name"
-          :error="errors.name"
-        >
-          <FormText
-            id="name"
-            name="name"
-            :value="season.name"
-          />
-        </FormGroup>
+        <FormInput
+          id="name"
+          type="text"
+          name="name"
+          required
+          autofocus
+          placeholder="Season name eg: (2025/2026)"
+          :value="season.name"
+        />
+      </FormGroup>
 
+      <div class="column w-full">
         <BtnPrimary
           tag="button"
           type="submit"
           :disabled="processing"
-          >Update</BtnPrimary
         >
-      </Form>
-    </div>
+          {{ processing ? 'Saving...' : 'Update' }}
+        </BtnPrimary>
+      </div>
+    </Form>
   </section>
 </template>

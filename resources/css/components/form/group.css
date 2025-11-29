@@ -1,3 +1,9 @@
+.form {
+  &.form--crud {
+    @apply row mt-20 flex flex-wrap gap-15 lg:mt-30 xl:mt-40;
+  }
+}
+
 .form-group {
   .form-group__instructions {
     @apply text-[12px] font-medium leading-[16px] text-black;

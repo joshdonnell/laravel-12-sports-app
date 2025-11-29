@@ -29,7 +29,7 @@ it('may send password reset notification', function (): void {
         ]);
 
     $response->assertRedirectToRoute('password.request')
-        ->assertSessionHas('status', 'A reset link will be sent if the account exists.');
+        ->assertSessionHas('status', 'We have emailed your password reset link.');
 
     Notification::assertSentTo($user, ResetPassword::class);
 });
@@ -42,8 +42,9 @@ it('returns generic message for non-existent email', function (): void {
             'email' => 'nonexistent@example.com',
         ]);
 
-    $response->assertRedirectToRoute('password.request')
-        ->assertSessionHas('status', 'A reset link will be sent if the account exists.');
+    $response->assertSessionHasErrors([
+        'email' => "We can't find a user with that email address.",
+    ]);
 
     Notification::assertNothingSent();
 });

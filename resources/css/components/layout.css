@@ -1,6 +1,6 @@
 @layer components {
   .container {
-    @apply mx-auto w-full px-20 md:px-[28px];
+    @apply mx-auto w-full px-20;
   }
 
   .row {

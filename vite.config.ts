@@ -46,6 +46,10 @@ export default defineConfig({
           from: '@inertiajs/vue3',
           names: inertiaComponents,
         },
+        {
+          from: 'vue-inline-svg',
+          names: ['InlineSvg'],
+        },
       ],
       resolvers: [
         (name: string) => {

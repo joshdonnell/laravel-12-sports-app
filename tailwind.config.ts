@@ -39,13 +39,16 @@ module.exports = {
         '200': '#1271FF',
         '300': '#1222C9',
       },
+      purple: {
+        DEFAULT: '#DCDAF3',
+      },
       grey: {
         '100': '#F5F5F5',
         '200': '#E5E7EB',
         '300': '#9CA3AF',
       },
       red: {
-        error: '#FF0000',
+        error: '#E8344F',
       },
       green: {
         success: '#00FF00',

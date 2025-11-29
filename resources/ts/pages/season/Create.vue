@@ -1,37 +1,49 @@
 <script setup lang="ts">
+import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import { store } from '@/routes/seasons'
+
+defineOptions({ layout: DashboardLayout })
 </script>
 
 <template>
-  <section class="py-100">
-    <div class="container space-y-40">
-      <h1 class="font-bold">Create Season</h1>
+  <Head title="Create Season" />
 
-      <hr />
+  <section class="season-create">
+    <SharedHero
+      title="Create Season"
+      description="Create a new season."
+    />
 
-      <Form
-        v-slot="{ processing, errors }"
-        v-bind="store.form()"
-        class="space-y-10"
+    <Form
+      v-slot="{ processing, errors }"
+      v-bind="store.form()"
+      class="form form--crud"
+    >
+      <FormGroup
+        :error="errors.name"
+        label="Name"
+        input-id="name"
+        class="column w-full lg:w-1/2"
       >
-        <FormGroup
-          input-id="name"
-          label="Name"
-          :error="errors.name"
-        >
-          <FormText
-            id="name"
-            name="name"
-          />
-        </FormGroup>
+        <FormInput
+          id="name"
+          type="text"
+          name="name"
+          required
+          autofocus
+          placeholder="Season name eg: (2025/2026)"
+        />
+      </FormGroup>
 
+      <div class="column w-full">
         <BtnPrimary
           tag="button"
           type="submit"
           :disabled="processing"
-          >Create</BtnPrimary
         >
-      </Form>
-    </div>
+          {{ processing ? 'Saving...' : 'Create' }}
+        </BtnPrimary>
+      </div>
+    </Form>
   </section>
 </template>

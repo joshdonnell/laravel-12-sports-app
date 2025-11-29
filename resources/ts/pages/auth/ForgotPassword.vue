@@ -2,69 +2,67 @@
 import { store } from '@/actions/App/Http/Controllers/Auth/EmailResetNotificationController'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import { login } from '@/routes'
+
+interface Props {
+  status?: string
+}
+
+defineProps<Props>()
+defineOptions({ layout: AuthLayout })
 </script>
 
 <template>
-  <AuthLayout title="Forgot Password">
-    <div class="row flex justify-center">
-      <div class="column w-full xl:w-4/12">
-        <SharedCard
-          title="Forgot your password"
-          title-tag="h1"
+  <Head title="Forgot Password" />
+
+  <div class="row flex justify-center">
+    <div class="column w-full xl:w-4/12">
+      <SharedCard
+        title="Forgot your password"
+        title-tag="h1"
+        description="Enter your email to receive a password reset link."
+      >
+        <SharedSuccessMessage
+          v-if="status"
+          class="mb-20"
         >
-          <Form
-            v-slot="{ errors, processing, recentlySuccessful }"
-            v-bind="store.form()"
-            :reset-on-success="['email']"
+          {{ status }}
+        </SharedSuccessMessage>
+
+        <Form
+          v-slot="{ errors, processing }"
+          v-bind="store.form()"
+          :disable-while-processing="true"
+        >
+          <FormGroup
+            :error="errors.email"
+            label="Email"
+            input-id="email"
           >
-            <FormGroup
-              :error="errors.email"
-              label="Email"
-            >
-              <FormText
-                id="email"
-                required
-                type="email"
-                name="email"
-                placeholder="Email"
-                autocomplete="off"
-              />
-            </FormGroup>
+            <FormInput
+              id="email"
+              type="email"
+              name="email"
+              required
+              autofocus
+              autocomplete="off"
+              placeholder="example@email.com"
+            />
+          </FormGroup>
 
-            <div class="mt-5 text-right">
-              <Link
-                :href="login.url()"
-                class="copy-sm default-transition font-medium text-black hover:text-blue-300"
-              >
-                Back to login
-              </Link>
-            </div>
+          <div class="mt-5 text-right">
+            <SharedTextLink :href="login.url()">Return to login</SharedTextLink>
+          </div>
 
-            <BtnPrimary
-              tag="button"
-              type="submit"
-              :disabled="processing"
-              class="mt-20"
-            >
-              {{ processing ? 'Sending...' : 'Reset password' }}
-            </BtnPrimary>
-
-            <Transition
-              enter-active-class="transition ease-in-out"
-              enter-from-class="opacity-0"
-              leave-active-class="transition ease-in-out"
-              leave-to-class="opacity-0"
-            >
-              <p
-                v-show="recentlySuccessful"
-                class="copy-md mt-20 text-blue-300"
-              >
-                If an account with that email exists, we have emailed your password reset link!
-              </p>
-            </Transition>
-          </Form>
-        </SharedCard>
-      </div>
+          <BtnPrimary
+            tag="button"
+            type="submit"
+            :disabled="processing"
+            class="mt-20"
+          >
+            {{ processing ? 'Sending...' : 'Reset password' }}
+          </BtnPrimary>
+        </Form>
+      </SharedCard>
     </div>
-  </AuthLayout>
+  </div>
 </template>

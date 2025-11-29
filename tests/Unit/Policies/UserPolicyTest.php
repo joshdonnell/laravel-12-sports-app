@@ -41,9 +41,11 @@ test('store', function (): void {
 });
 
 test('edit', function (): void {
-    $user = User::factory()->create();
-    $userToEdit = User::factory()->create();
     $sport = Sport::factory()->create();
+    $user = User::factory()->create([
+        'sport_id' => $sport->id,
+    ]);
+    $userToEdit = User::factory()->create();
 
     expect($user->can('edit', $userToEdit))->toBeFalse();
 
@@ -59,13 +61,15 @@ test('edit', function (): void {
         'sport_id' => $sport->id,
     ]);
 
-    expect($user->can('edit', $userToEdit))->toBeFalse();
+    expect($user->can('edit', $userToEdit))->toBeTrue();
 });
 
 test('update', function (): void {
-    $user = User::factory()->create();
-    $userToEdit = User::factory()->create();
     $sport = Sport::factory()->create();
+    $user = User::factory()->create([
+        'sport_id' => $sport->id,
+    ]);
+    $userToEdit = User::factory()->create();
 
     expect($user->can('update', $userToEdit))->toBeFalse();
 
@@ -81,13 +85,15 @@ test('update', function (): void {
         'sport_id' => $sport->id,
     ]);
 
-    expect($user->can('update', $userToEdit))->toBeFalse();
+    expect($user->can('update', $userToEdit))->toBeTrue();
 });
 
 test('destroy', function (): void {
-    $user = User::factory()->create();
-    $userToEdit = User::factory()->create();
     $sport = Sport::factory()->create();
+    $user = User::factory()->create([
+        'sport_id' => $sport->id,
+    ]);
+    $userToEdit = User::factory()->create();
 
     expect($user->can('destroy', $userToEdit))->toBeFalse();
 
@@ -96,12 +102,6 @@ test('destroy', function (): void {
     expect($user->can('destroy', $userToEdit))->toBeTrue();
 
     $user->syncRoles([Role::Admin]);
-
-    expect($user->can('destroy', $userToEdit))->toBeFalse();
-
-    $userToEdit->update([
-        'sport_id' => $sport->id,
-    ]);
 
     expect($user->can('destroy', $userToEdit))->toBeFalse();
 });

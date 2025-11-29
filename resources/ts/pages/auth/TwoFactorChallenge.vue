@@ -8,6 +8,8 @@ interface AuthConfigContent {
   toggleText: string
 }
 
+defineOptions({ layout: AuthLayout })
+
 const authConfigContent = computed<AuthConfigContent>(() => {
   if (showRecoveryInput.value) {
     return {
@@ -30,74 +32,77 @@ const toggleRecoveryMode = (clearErrors: () => void): void => {
   showRecoveryInput.value = !showRecoveryInput.value
   clearErrors()
 }
+
+const code = ref<string>('')
 </script>
 
 <template>
-  <AuthLayout :title="authConfigContent.title">
-    <div class="row flex justify-center">
-      <div class="column w-full xl:w-4/12">
-        <SharedCard
-          :title="authConfigContent.title"
-          :description="authConfigContent.description"
-          title-tag="h1"
+  <Head :title="authConfigContent.title" />
+
+  <div class="row flex justify-center">
+    <div class="column w-full xl:w-4/12">
+      <SharedCard
+        :title="authConfigContent.title"
+        :description="authConfigContent.description"
+        title-tag="h1"
+      >
+        <Form
+          v-slot="{ errors, processing, clearErrors }"
+          v-bind="store.form()"
+          :reset-on-success="['code']"
         >
-          <Form
-            v-slot="{ errors, processing, clearErrors }"
-            v-bind="store.form()"
-            :reset-on-success="['code']"
-          >
-            <template v-if="!showRecoveryInput">
-              <FormGroup
-                :error="errors.codeValue"
-                label="Code"
-              >
-                <FormText
-                  id="code"
-                  required
-                  type="number"
-                  name="code"
-                  placeholder="Enter OTP code"
-                />
-              </FormGroup>
-            </template>
+          <template v-if="!showRecoveryInput">
+            <input
+              type="hidden"
+              name="code"
+              :value="code"
+            />
 
-            <template v-else>
-              <FormGroup
-                :error="errors.recovery_code"
-                label="Recovery Code"
-              >
-                <FormText
-                  id="recovery_code"
-                  required
-                  type="text"
-                  name="recovery_code"
-                  placeholder="Enter recovery code"
-                  :autofocus="showRecoveryInput"
-                />
-              </FormGroup>
-            </template>
+            <FormGroup
+              :error="errors.code"
+              input-id="codes"
+              label="Code"
+            >
+              <FormPin v-model="code" />
+            </FormGroup>
+          </template>
 
-            <div class="mt-20 flex items-center gap-x-20">
-              <BtnPrimary
-                tag="button"
-                type="submit"
-                :disabled="processing"
-              >
-                {{ processing ? 'Confirming...' : 'Confirm' }}
-              </BtnPrimary>
+          <template v-else>
+            <FormGroup
+              :error="errors.recovery_code"
+              label="Recovery Code"
+            >
+              <FormInput
+                id="recovery_code"
+                type="text"
+                name="recovery_code"
+                required
+                placeholder="Enter recovery code"
+                :autofocus="showRecoveryInput"
+              />
+            </FormGroup>
+          </template>
 
-              <span class="copy-sm text-black">or</span>
+          <div class="mt-20 flex items-center gap-x-20">
+            <BtnPrimary
+              tag="button"
+              type="submit"
+              :disabled="processing"
+            >
+              {{ processing ? 'Confirming...' : 'Confirm' }}
+            </BtnPrimary>
 
-              <button
-                class="copy-sm default-transition text-black underline hover:text-blue-300"
-                @click="() => toggleRecoveryMode(clearErrors)"
-              >
-                {{ authConfigContent.toggleText }}
-              </button>
-            </div>
-          </Form>
-        </SharedCard>
-      </div>
+            <span class="copy-sm text-black">or</span>
+
+            <button
+              class="copy-sm default-transition font-medium text-black underline hover:text-blue-300"
+              @click="() => toggleRecoveryMode(clearErrors)"
+            >
+              {{ authConfigContent.toggleText }}
+            </button>
+          </div>
+        </Form>
+      </SharedCard>
     </div>
-  </AuthLayout>
+  </div>
 </template>

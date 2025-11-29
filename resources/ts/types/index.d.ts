@@ -33,11 +33,11 @@ export interface Pagination<T> {
   total: number
   data: T[]
   links: {
-    first: string | null
-    last: string | null
-    next: string | null
-    prev: string | null
-  }
+    url: string | null
+    label: string
+    page: number | null
+    active: boolean
+  }[]
 }
 
 export type BreadcrumbItemType = BreadcrumbItem

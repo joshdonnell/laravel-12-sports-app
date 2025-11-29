@@ -13,18 +13,22 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <div class="shared-card rounded-[20px] bg-white p-20 lg:p-40 xl:px-60">
+  <div class="shared-card mx-auto max-w-[500px] rounded-[20px] bg-white p-20 lg:p-40 xl:px-60">
     <component
       :is="titleTag"
       v-if="title"
-      class="heading-xl mb-25 font-semibold text-black"
+      class="heading-xl font-semibold text-black"
+      :class="{
+        'mb-15': description,
+        'mb-25': !description,
+      }"
     >
       {{ title }}
     </component>
 
     <p
       v-if="description"
-      class="copy-md mb-20 text-black"
+      class="copy-sm mb-25 text-grey-300"
     >
       {{ description }}
     </p>

@@ -14,7 +14,17 @@ final class CreateUserEmailResetNotificationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'email'],
+            'email' => ['required', 'email', 'exists:users,email'],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'email.exists' => "We can't find a user with that email address.",
         ];
     }
 }

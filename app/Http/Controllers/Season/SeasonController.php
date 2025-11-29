@@ -11,22 +11,31 @@ use App\Http\Requests\Season\CreateSeasonRequest;
 use App\Http\Requests\Season\UpdateSeasonRequest;
 use App\Models\Season;
 use App\Queries\Season\LatestSeasonQuery;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 
 final readonly class SeasonController
 {
-    public function index(LatestSeasonQuery $query): Response
+    public function index(LatestSeasonQuery $query, Request $request): Response
     {
         Gate::authorize('index');
 
-        $seasons = $query->builder()->paginate(config('app.defaults.pagination.limit'));
+        $search = $request->string('search')->trim();
+
+        $seasons = $query->builder()
+            ->when($search->isNotEmpty(), fn (Builder $query) => $query->where('name', 'like', "%{$search}%"))
+            ->paginate(config('app.defaults.pagination.limit'))
+            ->onEachSide(1)
+            ->withQueryString();
 
         return Inertia::render('season/Index',
             [
                 'seasons' => SeasonData::collect($seasons),
+                'search' => $search,
             ]
         );
     }
