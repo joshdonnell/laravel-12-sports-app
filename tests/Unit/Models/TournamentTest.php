@@ -33,9 +33,7 @@ test('a tournament belongs to a ruleset and sport', function (): void {
 });
 
 test('a tournament belongs to many clients', function (): void {
-    $clients = Client::factory(3)->create();
-    $tournament = Tournament::factory()->create();
-    $tournament->clients()->attach($clients);
+    $tournament = Tournament::factory()->hasClients(3)->create();
 
     expect($tournament->clients)->toHaveCount(3)
         ->and($tournament->clients->first())->toBeInstanceOf(Client::class);

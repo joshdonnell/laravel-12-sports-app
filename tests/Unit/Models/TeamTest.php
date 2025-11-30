@@ -35,18 +35,14 @@ test('a team belongs to a club and sport', function (): void {
 });
 
 test('a team belongs to many players', function (): void {
-    $team = Team::factory()->create();
-    $players = Player::factory(3)->create();
-    $team->players()->attach($players);
+    $team = Team::factory()->hasPlayers(3)->create();
 
     expect($team->players)->toHaveCount(3)
         ->and($team->players->first())->toBeInstanceOf(Player::class);
 });
 
 test('a team belongs to many venues', function (): void {
-    $team = Team::factory()->create();
-    $venues = Venue::factory(3)->create();
-    $team->venues()->attach($venues);
+    $team = Team::factory()->hasVenues(3)->create();
 
     expect($team->venues)->toHaveCount(3)
         ->and($team->venues->first())->toBeInstanceOf(Venue::class);

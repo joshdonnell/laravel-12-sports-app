@@ -43,18 +43,14 @@ test('a player belongs to a country', function (): void {
 });
 
 test('a player belongs to many positions', function (): void {
-    $player = Player::factory()->create();
-    $positions = Position::factory(3)->create();
-    $player->positions()->attach($positions);
+    $player = Player::factory()->hasPositions(3)->create();
 
     expect($player->positions)->toHaveCount(3)
         ->and($player->positions->first())->toBeInstanceOf(Position::class);
 });
 
 test('a player belongs to many teams', function (): void {
-    $player = Player::factory()->create();
-    $teams = Team::factory(3)->create();
-    $player->teams()->attach($teams);
+    $player = Player::factory()->hasTeams(3)->create();
 
     expect($player->teams)->toHaveCount(3)
         ->and($player->teams->first())->toBeInstanceOf(Team::class);

@@ -25,9 +25,7 @@ test('the user model structure matches', function (): void {
 });
 
 test('a user belongs to many clients', function (): void {
-    $user = User::factory()->create()->refresh();
-    $clients = Client::factory(3)->create();
-    $user->clients()->attach($clients);
+    $user = User::factory()->hasClients(3)->create()->refresh();
 
     expect($user->clients)->toHaveCount(3)
         ->and($user->clients->first())->toBeInstanceOf(Client::class);

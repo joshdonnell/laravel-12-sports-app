@@ -54,9 +54,7 @@ test('a fixture has a sport through a tournament', function (): void {
 });
 
 test('a fixture has many clients through a tournament', function (): void {
-    $clients = Client::factory(3)->create();
-    $tournament = Tournament::factory()->create();
-    $tournament->clients()->attach($clients);
+    $tournament = Tournament::factory()->hasClients(3)->create();
     $fixture = Fixture::factory()->create([
         'tournament_id' => $tournament->id,
     ]);

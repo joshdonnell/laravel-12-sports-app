@@ -23,20 +23,14 @@ test('the client model structure matches', function (): void {
 });
 
 test('a client belongs to many users', function (): void {
-    $client = Client::factory()->create();
-    $users = User::factory(3)->create();
-
-    $client->users()->attach($users);
+    $client = Client::factory()->hasUsers(3)->create();
 
     expect($client->users)->toHaveCount(3)
         ->and($client->users->first())->toBeInstanceOf(User::class);
 });
 
 test('a client belongs to many tournaments', function (): void {
-    $client = Client::factory()->create();
-    $tournaments = Tournament::factory(3)->create();
-
-    $client->tournaments()->attach($tournaments);
+    $client = Client::factory()->hasTournaments(3)->create();
 
     expect($client->tournaments)->toHaveCount(3)
         ->and($client->tournaments->first())->toBeInstanceOf(Tournament::class);
