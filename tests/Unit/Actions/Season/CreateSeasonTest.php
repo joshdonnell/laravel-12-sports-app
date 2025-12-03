@@ -6,7 +6,7 @@ use App\Actions\Season\CreateSeason;
 use App\Models\Season;
 
 it('creates a season', function (): void {
-    $action = app(CreateSeason::class);
+    $action = resolve(CreateSeason::class);
     $season = $action->handle([
         'name' => 'Test Season',
     ]);

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Enums\Role;
+use App\Enums\Permission;
 use App\Models\Season;
 use App\Models\User;
 
@@ -16,7 +16,7 @@ test('index', function (): void {
 
     expect($user->can('index', $season))->toBeFalse();
 
-    $user->assignRole(Role::SuperAdmin);
+    $user->givePermissionTo(Permission::LIST_SEASONS);
 
     expect($user->can('index', $season))->toBeTrue();
 });
@@ -27,7 +27,7 @@ test('create', function (): void {
 
     expect($user->can('create', $season))->toBeFalse();
 
-    $user->assignRole(Role::SuperAdmin);
+    $user->givePermissionTo(Permission::CREATE_SEASON);
 
     expect($user->can('create', $season))->toBeTrue();
 });
@@ -38,7 +38,7 @@ test('store', function (): void {
 
     expect($user->can('store', $season))->toBeFalse();
 
-    $user->assignRole(Role::SuperAdmin);
+    $user->givePermissionTo(Permission::CREATE_SEASON);
 
     expect($user->can('store', $season))->toBeTrue();
 });
@@ -49,9 +49,9 @@ test('edit', function (): void {
 
     expect($user->can('edit', $season))->toBeFalse();
 
-    $user->assignRole(Role::SuperAdmin);
+    $user->givePermissionTo(Permission::UPDATE_SEASON);
 
-    expect($user->can('create', $season))->toBeTrue();
+    expect($user->can('edit', $season))->toBeTrue();
 });
 
 test('update', function (): void {
@@ -60,7 +60,7 @@ test('update', function (): void {
 
     expect($user->can('update', $season))->toBeFalse();
 
-    $user->assignRole(Role::SuperAdmin);
+    $user->givePermissionTo(Permission::UPDATE_SEASON);
 
     expect($user->can('update', $season))->toBeTrue();
 });

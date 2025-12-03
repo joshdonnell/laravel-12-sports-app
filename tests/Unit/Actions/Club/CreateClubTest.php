@@ -7,7 +7,7 @@ use App\Models\Club;
 use App\Models\Sport;
 
 it('creates a club', function (): void {
-    $action = app(CreateClub::class);
+    $action = resolve(CreateClub::class);
 
     $club = $action->handle([
         'name' => 'Test Club',

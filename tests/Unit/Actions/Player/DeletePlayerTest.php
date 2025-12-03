@@ -7,7 +7,7 @@ use App\Models\Player;
 
 it('deletes a player', function (): void {
     $player = Player::factory()->create();
-    $action = app(DeletePlayer::class);
+    $action = resolve(DeletePlayer::class);
     $action->handle($player);
     expect($player->deleted_at)->not->toBeNull();
 });

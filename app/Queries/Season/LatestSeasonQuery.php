@@ -14,6 +14,7 @@ final readonly class LatestSeasonQuery
      */
     public function builder(): Builder
     {
-        return Season::query()->latest('updated_at');
+        return Season::query()
+            ->latest('updated_at');
     }
 }

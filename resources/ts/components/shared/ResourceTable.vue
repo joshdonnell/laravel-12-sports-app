@@ -1,4 +1,5 @@
 <script setup lang="ts" generic="T">
+import deleteIcon from '@/../svg/delete.svg'
 import type { Pagination, SharedData } from '@/types'
 
 type Props<T> = {
@@ -12,14 +13,66 @@ type Props<T> = {
   createEndpoint?: string
   editPermission?: string
   editEndpoint?: (id: string) => string
-  editField?: keyof T & string
+  editField?: keyof T
   noResults: string
+  deletePermission?: string
+  deleteEndpoint?: (id: string) => string
+  deleteField?: keyof T
+  deleteModalTitle?: string
 }
 
-defineProps<Props<T>>()
+const props = defineProps<Props<T>>()
 
 const page = usePage<SharedData>()
 const auth = page.props.auth
+
+const useDelete = () => {
+  const showDeleteModal = ref(false)
+  const deleteConfirmation = ref(false)
+  const deleteModalId = ref('')
+  const isDeleting = ref(false)
+  const error = ref('')
+
+  const handleShowDeleteModal = (id: string) => {
+    deleteModalId.value = id
+    showDeleteModal.value = true
+  }
+  const handleDelete = async () => {
+    if (!deleteModalId.value || !props.deleteEndpoint) return
+
+    isDeleting.value = true
+
+    router.delete(props.deleteEndpoint(deleteModalId.value), {
+      onSuccess: () => handleCloseDeleteModal(),
+      onError: () => {
+        isDeleting.value = false
+        error.value = 'Something went wrong. Please try again.'
+      },
+    })
+  }
+
+  const handleCloseDeleteModal = () => {
+    deleteModalId.value = ''
+    showDeleteModal.value = false
+    isDeleting.value = false
+    error.value = ''
+  }
+
+  watch(deleteConfirmation, () => {
+    handleDelete()
+  })
+
+  return {
+    showDeleteModal,
+    handleShowDeleteModal,
+    deleteConfirmation,
+    handleCloseDeleteModal,
+    isDeleting,
+    error,
+  }
+}
+
+const { showDeleteModal, handleShowDeleteModal, deleteConfirmation, handleCloseDeleteModal, isDeleting, error } = useDelete()
 </script>
 
 <template>
@@ -54,7 +107,7 @@ const auth = page.props.auth
 
                 <div
                   v-if="editPermission && editEndpoint && editField && auth.can[editPermission]"
-                  class="column ml-auto flex w-3/12 justify-end"
+                  class="column ml-auto flex w-3/12 items-center justify-end gap-x-20"
                 >
                   <Link
                     :href="editEndpoint(item[editField] as string)"
@@ -62,6 +115,16 @@ const auth = page.props.auth
                   >
                     Edit
                   </Link>
+
+                  <button
+                    v-if="deletePermission && auth.can[deletePermission] && deleteField"
+                    @click="handleShowDeleteModal(item[deleteField] as string)"
+                  >
+                    <InlineSvg
+                      :src="deleteIcon"
+                      class="w-15 text-red-error"
+                    />
+                  </button>
                 </div>
               </div>
             </div>
@@ -83,4 +146,35 @@ const auth = page.props.auth
       <BtnPrimary :href="createEndpoint">{{ createText }}</BtnPrimary>
     </div>
   </section>
+
+  <template v-if="deletePermission && auth.can[deletePermission] && showDeleteModal">
+    <SharedModal
+      :title="deleteModalTitle || ''"
+      @close="handleCloseDeleteModal()"
+    >
+      <div class="mt-40 flex flex-col items-center gap-y-20">
+        <p
+          v-if="error"
+          class="block text-[12px] font-medium leading-[16px] text-red-error"
+        >
+          {{ error }}
+        </p>
+
+        <BtnPrimary
+          tag="button"
+          @click="handleCloseDeleteModal()"
+        >
+          Cancel
+        </BtnPrimary>
+
+        <button
+          class="copy default-transition cursor-pointer text-red-error underline hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50"
+          :disabled="isDeleting"
+          @click="deleteConfirmation = true"
+        >
+          {{ isDeleting ? 'Deleting...' : 'Delete' }}
+        </button>
+      </div>
+    </SharedModal>
+  </template>
 </template>

@@ -10,7 +10,7 @@ use App\Models\Sport;
 it('creates a player', function (): void {
     $country = Country::factory()->create();
     $sport = Sport::factory()->create();
-    $action = app(CreatePlayer::class);
+    $action = resolve(CreatePlayer::class);
     $player = $action->handle([
         'first_name' => 'Test Player',
         'country_id' => $country->id,

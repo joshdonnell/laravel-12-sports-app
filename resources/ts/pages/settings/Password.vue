@@ -55,7 +55,7 @@ defineOptions({ layout: DashboardLayout })
           <FormGroup
             :error="errors.password_confirmation"
             label="Confirm New Password"
-            input-id="confirm_password"
+            input-id="password_confirmation"
           >
             <FormInput
               id="password_confirmation"

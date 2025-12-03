@@ -8,7 +8,7 @@ use App\Models\Sport;
 use App\Models\Team;
 
 it('creates a team', function (): void {
-    $action = app(CreateTeam::class);
+    $action = resolve(CreateTeam::class);
     $club = Club::factory()->create();
     $sport = Sport::factory()->create();
     $team = $action->handle([

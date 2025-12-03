@@ -7,7 +7,7 @@ use App\Models\Season;
 
 it('updates a season', function (): void {
     $season = Season::factory()->create();
-    $action = app(UpdateSeason::class);
+    $action = resolve(UpdateSeason::class);
     $action->handle($season, ['name' => 'New Name']);
     expect($season->refresh()->name)->toBe('New Name');
 });

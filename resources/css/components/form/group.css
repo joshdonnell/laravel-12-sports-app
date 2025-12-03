@@ -1,6 +1,6 @@
 .form {
   &.form--crud {
-    @apply row mt-20 flex flex-wrap gap-15 lg:mt-30 xl:mt-40;
+    @apply row mt-20 flex flex-wrap gap-y-20 lg:mt-30 xl:mt-40;
   }
 }
 

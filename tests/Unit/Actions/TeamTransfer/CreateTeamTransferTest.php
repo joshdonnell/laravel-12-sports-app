@@ -8,7 +8,7 @@ use App\Models\Team;
 use Illuminate\Support\Facades\DB;
 
 it('creates a team transfer', function (): void {
-    $action = app(CreateTeamTransfer::class);
+    $action = resolve(CreateTeamTransfer::class);
     $player = Player::factory()->create();
     $fromTeam = Team::factory()->create();
     $toTeam = Team::factory()->create();
@@ -19,7 +19,7 @@ it('creates a team transfer', function (): void {
 });
 
 it('creates a team transfer without from team', function (): void {
-    $action = app(CreateTeamTransfer::class);
+    $action = resolve(CreateTeamTransfer::class);
     $player = Player::factory()->create();
     $toTeam = Team::factory()->create();
     $action->handle($player, null, $toTeam);
@@ -30,7 +30,7 @@ it('creates a team transfer without from team', function (): void {
 });
 
 it('creates a team transfer without to team', function (): void {
-    $action = app(CreateTeamTransfer::class);
+    $action = resolve(CreateTeamTransfer::class);
     $player = Player::factory()->create();
     $fromTeam = Team::factory()->create();
     $action->handle($player, $fromTeam);

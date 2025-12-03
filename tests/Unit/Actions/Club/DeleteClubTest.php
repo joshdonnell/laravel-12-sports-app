@@ -8,7 +8,7 @@ use App\Models\Club;
 it('deletes a club', function (): void {
     $club = Club::factory()->create();
 
-    $action = app(DeleteClub::class);
+    $action = resolve(DeleteClub::class);
 
     $action->handle($club);
 

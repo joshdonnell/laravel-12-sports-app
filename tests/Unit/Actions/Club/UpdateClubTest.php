@@ -8,7 +8,7 @@ use App\Models\Club;
 it('updates a club', function (): void {
     $club = Club::factory()->create();
 
-    $action = app(UpdateClub::class);
+    $action = resolve(UpdateClub::class);
 
     $action->handle($club, [
         'name' => 'Updated Club',

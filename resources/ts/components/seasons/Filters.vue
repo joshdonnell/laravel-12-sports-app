@@ -16,7 +16,7 @@ const model = defineModel<string>()
           v-model="model"
           type="text"
           name="search"
-          placeholder="Search seasons by name..."
+          placeholder="Search Seasons by name..."
           :icon="searchIcon"
         />
       </FormGroup>

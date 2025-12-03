@@ -9,9 +9,9 @@ use App\Actions\Season\UpdateSeason;
 use App\Data\Season\SeasonData;
 use App\Http\Requests\Season\CreateSeasonRequest;
 use App\Http\Requests\Season\UpdateSeasonRequest;
+use App\Models\Scopes\SearchScope;
 use App\Models\Season;
 use App\Queries\Season\LatestSeasonQuery;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -22,12 +22,12 @@ final readonly class SeasonController
 {
     public function index(LatestSeasonQuery $query, Request $request): Response
     {
-        Gate::authorize('index');
+        Gate::authorize('index', Season::class);
 
         $search = $request->string('search')->trim();
 
         $seasons = $query->builder()
-            ->when($search->isNotEmpty(), fn (Builder $query) => $query->where('name', 'like', "%{$search}%"))
+            ->withGlobalScope('search', new SearchScope($search))
             ->paginate(config('app.defaults.pagination.limit'))
             ->onEachSide(1)
             ->withQueryString();
@@ -42,14 +42,14 @@ final readonly class SeasonController
 
     public function create(): Response
     {
-        Gate::authorize('create');
+        Gate::authorize('create', Season::class);
 
         return Inertia::render('season/Create');
     }
 
     public function store(CreateSeasonRequest $request, CreateSeason $action): RedirectResponse
     {
-        Gate::authorize('store');
+        Gate::authorize('store', Season::class);
 
         $action->handle($request->validated());
 
@@ -58,7 +58,7 @@ final readonly class SeasonController
 
     public function edit(Season $season): Response
     {
-        Gate::authorize('edit');
+        Gate::authorize('edit', $season);
 
         return Inertia::render('season/Edit', [
             'season' => SeasonData::from($season),
@@ -67,7 +67,7 @@ final readonly class SeasonController
 
     public function update(UpdateSeasonRequest $request, Season $season, UpdateSeason $action): RedirectResponse
     {
-        Gate::authorize('update');
+        Gate::authorize('update', $season);
 
         $action->handle($season, $request->validated());
 

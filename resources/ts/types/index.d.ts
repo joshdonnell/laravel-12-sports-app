@@ -1,21 +1,11 @@
-import { InertiaLinkProps } from '@inertiajs/vue3'
-import type { LucideIcon } from 'lucide-vue-next'
-
 export interface Auth {
-  user: App.Data.User.UserData
+  user: App.Data.Auth.UserData
   can: Record<string, boolean>
 }
 
 export interface BreadcrumbItem {
   title: string
   href: string
-}
-
-export interface NavItem {
-  title: string
-  href: NonNullable<InertiaLinkProps['href']>
-  icon?: LucideIcon
-  isActive?: boolean
 }
 
 export type SharedData<T extends Record<string, unknown> = Record<string, unknown>> = T & {

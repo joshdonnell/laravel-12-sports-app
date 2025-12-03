@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\Role;
 use App\Traits\HasUuidTrait;
 use Carbon\CarbonInterface;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -90,5 +92,52 @@ final class User extends Authenticatable implements MustVerifyEmail
     public function sport(): BelongsTo
     {
         return $this->belongsTo(Sport::class);
+    }
+
+    /**
+     * @param  Builder<User>  $query
+     */
+    public function scopeExcludeCurrentUser(Builder $query): void
+    {
+        if (! auth()->check()) {
+            return;
+        }
+
+        $user = auth()->user();
+
+        if (! $user) {
+            return;
+        }
+
+        $query->where('id', '!=', $user->id);
+    }
+
+    /**
+     * @param  Builder<User>  $query
+     */
+    public function scopeUsersWithLowerRole(Builder $query): void
+    {
+        if (! auth()->check()) {
+            return;
+        }
+
+        $user = auth()->user();
+
+        if (! $user) {
+            return;
+        }
+
+        if ($user->hasRole(Role::SuperAdmin)) {
+            return;
+        }
+
+        if ($user->hasRole(Role::Admin)) {
+            $query->role(([Role::Admin->value, Role::Editor->value, Role::User->value]));
+
+            return;
+        }
+
+        // Returns no users when not SA or Admin
+        $query->where('id', '=', 0);
     }
 }

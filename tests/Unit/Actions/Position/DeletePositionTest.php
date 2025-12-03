@@ -7,7 +7,7 @@ use App\Models\Position;
 
 it('deletes a position', function (): void {
     $position = Position::factory()->create();
-    $action = app(DeletePosition::class);
+    $action = resolve(DeletePosition::class);
     $action->handle($position);
     expect($position->exists)->toBeFalse();
 });

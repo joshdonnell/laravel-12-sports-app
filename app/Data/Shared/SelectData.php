@@ -19,14 +19,15 @@ final class SelectData extends Data
     ) {}
 
     /**
-     * @template T of array
+     * @template T of mixed
      *
      * @param  T  $data
      * @return array<int|string, self>
      */
-    public static function pick(string $valueField, string $labelField, ?string $iconField, array $data): array
+    public static function pick(string $valueField, string $labelField, ?string $iconField, mixed $data): array
     {
-        $map = array_map(fn (array $item): array => [
+        /* @param  T  $item */
+        $map = array_map(fn (mixed $item): array => [
             'value' => (string) $item[$valueField],
             'label' => (string) $item[$labelField],
             'icon' => $iconField ? (string) $item[$iconField] : null,

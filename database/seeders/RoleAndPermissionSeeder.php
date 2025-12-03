@@ -15,7 +15,7 @@ final class RoleAndPermissionSeeder extends Seeder
 {
     public function run(): void
     {
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        resolve(PermissionRegistrar::class)->forgetCachedPermissions();
 
         foreach (Permission::cases() as $permission) {
             \Spatie\Permission\Models\Permission::query()->updateOrCreate(['name' => $permission->value]);
@@ -27,7 +27,7 @@ final class RoleAndPermissionSeeder extends Seeder
             $this->syncPermissionsToRole($role);
         }
 
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        resolve(PermissionRegistrar::class)->forgetCachedPermissions();
     }
 
     private function syncPermissionsToRole(ContractsRole $role): void

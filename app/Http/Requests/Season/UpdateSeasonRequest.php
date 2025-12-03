@@ -17,6 +17,7 @@ final class UpdateSeasonRequest extends FormRequest
     public function rules(): array
     {
         $currentSeason = $this->season;
+        assert($currentSeason instanceof Season);
 
         return [
             'name' => [

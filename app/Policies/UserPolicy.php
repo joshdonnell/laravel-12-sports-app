@@ -8,7 +8,7 @@ use App\Enums\Permission;
 use App\Enums\Role;
 use App\Models\User;
 
-final readonly class UserPolicy
+final class UserPolicy
 {
     public function index(User $user): bool
     {

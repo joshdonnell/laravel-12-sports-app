@@ -10,7 +10,7 @@ const props = withDefaults(defineProps<Props>(), {
   placeholder: undefined,
 })
 
-const model = defineModel<string | null>({ required: false })
+const model = defineModel<string | null>({ required: false, default: '' })
 
 onMounted(() => {
   if (props.value) {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Enums\Role;
+use App\Enums\Permission;
 use App\Models\Round;
 use App\Models\User;
 
@@ -16,7 +16,7 @@ test('index', function (): void {
 
     expect($user->can('index', $round))->toBeFalse();
 
-    $user->assignRole(Role::SuperAdmin);
+    $user->givePermissionTo(Permission::LIST_ROUNDS);
 
     expect($user->can('index', $round))->toBeTrue();
 });
@@ -27,7 +27,7 @@ test('create', function (): void {
 
     expect($user->can('create', $round))->toBeFalse();
 
-    $user->assignRole(Role::SuperAdmin);
+    $user->givePermissionTo(Permission::CREATE_ROUND);
 
     expect($user->can('create', $round))->toBeTrue();
 });
@@ -38,7 +38,7 @@ test('store', function (): void {
 
     expect($user->can('store', $round))->toBeFalse();
 
-    $user->assignRole(Role::SuperAdmin);
+    $user->givePermissionTo(Permission::CREATE_ROUND);
 
     expect($user->can('store', $round))->toBeTrue();
 });
@@ -49,9 +49,9 @@ test('edit', function (): void {
 
     expect($user->can('edit', $round))->toBeFalse();
 
-    $user->assignRole(Role::SuperAdmin);
+    $user->givePermissionTo(Permission::UPDATE_ROUND);
 
-    expect($user->can('create', $round))->toBeTrue();
+    expect($user->can('edit', $round))->toBeTrue();
 });
 
 test('update', function (): void {
@@ -60,7 +60,7 @@ test('update', function (): void {
 
     expect($user->can('update', $round))->toBeFalse();
 
-    $user->assignRole(Role::SuperAdmin);
+    $user->givePermissionTo(Permission::UPDATE_ROUND);
 
     expect($user->can('update', $round))->toBeTrue();
 });

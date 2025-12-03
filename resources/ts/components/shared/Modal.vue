@@ -46,7 +46,7 @@ onUnmounted(() => {
     >
       <div
         ref="modalContent"
-        class="relative max-h-full w-full max-w-[600px] rounded-[20px] bg-white p-20 md:p-40 xl:p-60"
+        class="relative max-h-full w-full max-w-[600px] rounded-[20px] bg-white p-20 md:p-40 xl:p-60 xl:pb-40"
       >
         <button
           class="default-transition absolute right-15 top-15 flex h-30 w-30 cursor-pointer items-center justify-center rounded-[5px] bg-white-100 text-black hover:bg-blue-200 hover:text-white"
@@ -57,6 +57,7 @@ onUnmounted(() => {
             class="w-15"
           />
         </button>
+
         <h2
           v-if="title"
           class="heading-xl mb-20 font-semibold text-black xl:mb-25"

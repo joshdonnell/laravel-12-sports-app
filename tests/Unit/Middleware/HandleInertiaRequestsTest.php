@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Data\User\UserData;
+use App\Data\Auth\UserData;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Models\User;
 use Illuminate\Http\Request;

@@ -7,7 +7,7 @@ use App\Models\Position;
 use App\Models\Sport;
 
 it('creates a position', function (): void {
-    $action = app(CreatePosition::class);
+    $action = resolve(CreatePosition::class);
     $position = $action->handle([
         'name' => 'Test Position',
         'sport_id' => Sport::factory()->create()->id,

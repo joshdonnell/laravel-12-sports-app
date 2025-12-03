@@ -57,7 +57,7 @@ watchDebounced(
           field: 'uuid',
         },
       ]"
-      create-text="Add season"
+      create-text="Add Season"
       create-permission="create-season"
       :create-endpoint="create.url()"
       edit-permission="update-season"

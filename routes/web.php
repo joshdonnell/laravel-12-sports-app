@@ -6,6 +6,8 @@ use App\Http\Controllers\Season\SeasonController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\TwoFactorAuthenticationController;
+use App\Http\Controllers\Sport\SportController;
+use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -30,19 +32,18 @@ Route::middleware('auth')->group(function (): void {
         ->name('two-factor.show');
 });
 
-// TODO: we need to add routes and use the spatie permission package to protect them
-// Rounds
-// Clubs
-// Teams
-// Players
-// Positions
-
 Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function (): void {
     // Dashboard
     Route::get('/', fn () => Inertia::render('Dashboard'))->name('dashboard');
 
+    // Sports
+    Route::resource('sports', SportController::class)->only(['index', 'create', 'store', 'edit', 'update']);
+
     // Seasons
     Route::resource('seasons', SeasonController::class)->only(['index', 'create', 'store', 'edit', 'update']);
+
+    // Users
+    Route::resource('users', UserController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
 });
 
 require __DIR__.'/auth.php';

@@ -14,7 +14,7 @@ it('updates a user', function (): void {
         'email' => 'old@email.com',
     ]);
 
-    $action = app(UpdateUser::class);
+    $action = resolve(UpdateUser::class);
 
     $action->handle($user, [
         'name' => 'New Name',
@@ -35,7 +35,7 @@ it('resets email verification when email changes', function (): void {
 
     expect($user->email_verified_at)->not->toBeNull();
 
-    $action = app(UpdateUser::class);
+    $action = resolve(UpdateUser::class);
 
     $action->handle($user, [
         'email' => 'new@email.com',
@@ -53,7 +53,7 @@ it('keeps email verification when email stays the same', function (): void {
         'email_verified_at' => $verifiedAt,
     ]);
 
-    $action = app(UpdateUser::class);
+    $action = resolve(UpdateUser::class);
 
     $action->handle($user, [
         'email' => 'same@email.com',

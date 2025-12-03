@@ -7,7 +7,7 @@ use App\Models\Round;
 use App\Models\Sport;
 
 it('creates a round', function (): void {
-    $action = app(CreateRound::class);
+    $action = resolve(CreateRound::class);
     $sport = Sport::factory()->create();
     $round = $action->handle([
         'name' => 'Test Round',

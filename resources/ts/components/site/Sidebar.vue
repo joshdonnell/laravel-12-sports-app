@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import clientsIcon from '@/../svg/clients.svg'
 import clubsIcon from '@/../svg/club.svg'
 import dashboardIcon from '@/../svg/dashboard.svg'
 import downIcon from '@/../svg/down.svg'
@@ -6,16 +7,23 @@ import fixturesIcon from '@/../svg/fixtures.svg'
 import logoMarque from '@/../svg/logo-marque.svg'
 import logoName from '@/../svg/logo-name.svg'
 import playersIcon from '@/../svg/player.svg'
-import rulesIcon from '@/../svg/rules.svg'
+import roundsIcon from '@/../svg/rounds.svg'
 import scoringIcon from '@/../svg/scoring.svg'
 import seasonIcon from '@/../svg/season.svg'
+import sportsIcon from '@/../svg/sports.svg'
+import standingsIcon from '@/../svg/standings.svg'
 import statsIcon from '@/../svg/stats.svg'
+import superAdminIcon from '@/../svg/superAdmin.svg'
 import teamIcon from '@/../svg/teams.svg'
 import tournamentsIcon from '@/../svg/tournaments.svg'
 import usersIcon from '@/../svg/users.svg'
 import venuesIcon from '@/../svg/venues.svg'
+import rulesIcon from '../../../svg/rules.svg'
+
 import { dashboard } from '@/routes'
 import seasons from '@/routes/seasons'
+import sports from '@/routes/sports'
+import users from '@/routes/users'
 import { SharedData } from '@/types'
 import type { RouteDefinition } from '@/wayfinder'
 import { Link } from '@inertiajs/vue3'
@@ -56,7 +64,7 @@ const useMenu = () => {
         },
         {
           name: 'Rounds',
-          icon: fixturesIcon,
+          icon: roundsIcon,
           link: '/',
           permission: 'list-rounds',
         },
@@ -120,7 +128,7 @@ const useMenu = () => {
         },
         {
           name: 'Standings',
-          icon: statsIcon,
+          icon: standingsIcon,
           link: '/',
           permission: 'list-standings',
         },
@@ -145,8 +153,27 @@ const useMenu = () => {
     {
       name: 'Users',
       icon: usersIcon,
-      link: '/',
+      link: users.index(),
       permission: 'list-users',
+    },
+    {
+      name: 'Super Admin',
+      icon: superAdminIcon,
+      permission: 'list-sports',
+      children: [
+        {
+          name: 'Sports',
+          icon: sportsIcon,
+          link: sports.index(),
+          permission: 'list-sports',
+        },
+        {
+          name: 'API Clients',
+          icon: clientsIcon,
+          link: '/',
+          permission: 'list-clients',
+        },
+      ],
     },
   ])
   const toggleChildren = (item: MenuItem) => {
@@ -175,6 +202,16 @@ const useMenu = () => {
       .then(() => done())
   }
 
+  onMounted(() => {
+    const currentUrl = page.url
+
+    menuItems.value.forEach((item) => {
+      if (!item.children?.length) return
+
+      item.active = item.children.some((child) => typeof child.link === 'object' && currentUrl.includes(child.link.url))
+    })
+  })
+
   return {
     menuItems,
     toggleChildren,
@@ -189,7 +226,7 @@ const { menuItems, toggleChildren, showChildren, hideChildren } = useMenu()
 </script>
 
 <template>
-  <div class="site-sidebar flex h-full max-h-full w-full max-w-[255px] flex-col overflow-hidden rounded-r-[20px] bg-white-100">
+  <div class="site-sidebar flex h-full max-h-full w-full max-w-[255px] flex-col overflow-hidden rounded-tr-[20px] bg-white-100">
     <div class="flex items-center justify-between border-b border-white p-20">
       <InlineSvg
         class="w-[32px] shrink-0"
@@ -203,7 +240,7 @@ const { menuItems, toggleChildren, showChildren, hideChildren } = useMenu()
     </div>
 
     <nav class="relative h-full max-h-full overflow-auto px-10 py-20">
-      <ul class="gap flex flex-col">
+      <ul class="gap flex flex-col gap-y-[2px]">
         <template
           v-for="(item, key) in menuItems"
           :key="key"
@@ -215,10 +252,15 @@ const { menuItems, toggleChildren, showChildren, hideChildren } = useMenu()
             <component
               :is="item.link ? Link : 'button'"
               v-bind="item.link ? { href: item.link } : {}"
-              class="heading-md default-transition flex w-full items-center justify-between gap-x-10 rounded-t-[10px] px-10 py-10 text-black hover:text-blue-200"
+              class="heading-md default-transition flex w-full items-center justify-between gap-x-10 px-10 py-10 text-black hover:bg-white hover:text-blue-200"
               :class="{
+                'rounded-[10px]': !item.children,
+                'rounded-t-[10px]': item.children,
                 'bg-white': item.active,
-                'text-blue-300': item.link && typeof item.link === 'object' && $page.url === item.link.url,
+                'bg-white text-blue-300':
+                  item.link &&
+                  typeof item.link === 'object' &&
+                  (item.link.url === '/dashboard' ? page.url === item.link.url : page.url.includes(item.link.url)),
               }"
               @click="toggleChildren(item)"
             >
@@ -256,7 +298,7 @@ const { menuItems, toggleChildren, showChildren, hideChildren } = useMenu()
                       :href="child.link"
                       class="heading-md default-transition flex items-center gap-x-20 text-black hover:text-blue-200"
                       :class="{
-                        'text-blue-300': child.link && typeof child.link === 'object' && $page.url === child.link.url,
+                        'text-blue-300': child.link && typeof child.link === 'object' && page.url.includes(child.link.url),
                       }"
                     >
                       <InlineSvg

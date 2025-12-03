@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Scopes\SportScope;
 use App\Traits\HasUuidTrait;
 use Carbon\CarbonInterface;
 use Database\Factories\ClientFactory;
-use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,7 +22,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read CarbonInterface $updated_at
  * @property-read CarbonInterface|null $deleted_at
  */
-#[ScopedBy([SportScope::class])]
 final class Client extends Model
 {
     /** @use HasFactory<ClientFactory> */

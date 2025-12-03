@@ -7,7 +7,7 @@ use App\Models\Round;
 
 it('updates a round', function (): void {
     $round = Round::factory()->create();
-    $action = app(UpdateRound::class);
+    $action = resolve(UpdateRound::class);
     $action->handle($round, ['name' => 'New Name']);
     expect($round->name)->toBe('New Name');
 });

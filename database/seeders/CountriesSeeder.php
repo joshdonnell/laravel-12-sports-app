@@ -14,7 +14,7 @@ final class CountriesSeeder extends Seeder
 {
     public function run(): void
     {
-        $service = app(GetCountries::class);
+        $service = resolve(GetCountries::class);
 
         try {
             $countries = $service->getCountries();

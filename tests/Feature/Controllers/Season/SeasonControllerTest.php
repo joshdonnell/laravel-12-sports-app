@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Enums\Permission;
-use App\Enums\Role;
 use App\Models\Season;
 use App\Models\User;
 use Database\Seeders\RoleAndPermissionSeeder;
@@ -14,7 +13,7 @@ beforeEach(function (): void {
 
 it('renders seasons index page', function (): void {
     $user = User::factory()->create();
-    $user->assignRole(Role::SuperAdmin);
+    $user->givePermissionTo(Permission::LIST_SEASONS->value);
 
     Season::factory()->count(3)->create();
 
@@ -39,7 +38,7 @@ it('denies access to seasons index without permission', function (): void {
 
 it('renders season create page', function (): void {
     $user = User::factory()->create();
-    $user->assignRole(Role::SuperAdmin);
+    $user->givePermissionTo(Permission::CREATE_SEASON->value);
 
     $response = $this->actingAs($user)
         ->fromRoute('seasons.index')
@@ -61,7 +60,7 @@ it('denies access to season create without permission', function (): void {
 
 it('may create a season', function (): void {
     $user = User::factory()->create();
-    $user->assignRole(Role::SuperAdmin);
+    $user->givePermissionTo(Permission::CREATE_SEASON->value);
 
     $response = $this->actingAs($user)
         ->fromRoute('seasons.create')
@@ -113,7 +112,7 @@ it('enforces max length for name when creating season', function (): void {
 
 it('renders season edit page', function (): void {
     $user = User::factory()->create();
-    $user->assignRole(Role::SuperAdmin);
+    $user->givePermissionTo(Permission::UPDATE_SEASON->value);
 
     $season = Season::factory()->create();
 
@@ -139,7 +138,7 @@ it('denies access to season edit without permission', function (): void {
 
 it('may update a season', function (): void {
     $user = User::factory()->create();
-    $user->assignRole(Role::SuperAdmin);
+    $user->givePermissionTo(Permission::UPDATE_SEASON->value);
 
     $season = Season::factory()->create(['name' => 'Old Season Name']);
 

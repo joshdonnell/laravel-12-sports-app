@@ -7,7 +7,7 @@ import Components from 'unplugin-vue-components/vite'
 import { defineConfig } from 'vite'
 import { watch } from 'vite-plugin-watch'
 
-const inertiaComponents = ['Head', 'Link', 'Form']
+const inertiaComponents = ['Deferred', 'Head', 'Link', 'Form']
 
 export default defineConfig({
   resolve: {
