@@ -1,3 +1,0 @@
-composer lint
-composer test:unit
-composer test:vitest
