@@ -48,7 +48,7 @@ defineOptions({ layout: DashboardLayout })
           type="submit"
           :disabled="processing"
         >
-          {{ processing ? 'Saving...' : 'Update' }}
+          {{ processing ? 'Saving...' : 'Update Season' }}
         </BtnPrimary>
       </div>
     </Form>

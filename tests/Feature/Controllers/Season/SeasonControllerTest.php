@@ -11,186 +11,197 @@ beforeEach(function (): void {
     $this->seed(RoleAndPermissionSeeder::class);
 });
 
-it('renders seasons index page', function (): void {
-    $user = User::factory()->create();
-    $user->givePermissionTo(Permission::LIST_SEASONS->value);
+describe('index', function (): void {
+    it('renders seasons index page', function (): void {
+        $user = createUserWithPermission(Permission::LIST_SEASONS);
 
-    Season::factory()->count(3)->create();
+        Season::factory()->count(3)->create();
 
-    $response = $this->actingAs($user)
-        ->fromRoute('dashboard')
-        ->get(route('seasons.index'));
+        $response = $this->actingAs($user)
+            ->fromRoute('dashboard')
+            ->get(route('seasons.index'));
 
-    $response->assertOk()
-        ->assertInertia(fn ($page) => $page
-            ->component('season/Index')
-            ->has('seasons'));
+        $response->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('season/Index')
+                ->has('seasons'));
+    });
+
+    it('denies access without permission', function (): void {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)
+            ->get(route('seasons.index'));
+
+        $response->assertForbidden();
+    });
 });
 
-it('denies access to seasons index without permission', function (): void {
-    $user = User::factory()->create();
+describe('create', function (): void {
+    it('renders season create page', function (): void {
+        $user = createUserWithPermission(Permission::CREATE_SEASON);
 
-    $response = $this->actingAs($user)
-        ->get(route('seasons.index'));
+        $response = $this->actingAs($user)
+            ->fromRoute('seasons.index')
+            ->get(route('seasons.create'));
 
-    $response->assertForbidden();
+        $response->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('season/Create'));
+    });
+
+    it('denies access without permission', function (): void {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)
+            ->get(route('seasons.create'));
+
+        $response->assertForbidden();
+    });
 });
 
-it('renders season create page', function (): void {
-    $user = User::factory()->create();
-    $user->givePermissionTo(Permission::CREATE_SEASON->value);
+describe('store', function (): void {
+    it('may create a season', function (): void {
+        $user = createUserWithPermission(Permission::CREATE_SEASON);
 
-    $response = $this->actingAs($user)
-        ->fromRoute('seasons.index')
-        ->get(route('seasons.create'));
+        $response = $this->actingAs($user)
+            ->fromRoute('seasons.create')
+            ->post(route('seasons.store'), [
+                'name' => '2024 Season',
+            ]);
 
-    $response->assertOk()
-        ->assertInertia(fn ($page) => $page
-            ->component('season/Create'));
+        $response->assertRedirectToRoute('seasons.index');
+        expect(Season::query()->where('name', '2024 Season')->exists())->toBeTrue();
+    });
+
+    it('denies season creation without permission', function (): void {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)
+            ->post(route('seasons.store'), [
+                'name' => '2024 Season',
+            ]);
+
+        $response->assertForbidden();
+    });
+
+    it('validates required fields', function (): void {
+        $user = createUserWithPermission(Permission::CREATE_SEASON);
+
+        $response = $this->actingAs($user)
+            ->fromRoute('seasons.create')
+            ->post(route('seasons.store'), []);
+
+        $response->assertRedirectToRoute('seasons.create')
+            ->assertSessionHasErrors(['name']);
+
+        $response = $this->actingAs($user)
+            ->fromRoute('seasons.create')
+            ->post(route('seasons.store'), [
+                'name' => '2024 Season',
+            ]);
+
+        $response->assertSessionHasNoErrors();
+    });
+
+    it('enforces max length for name', function (): void {
+        $user = createUserWithPermission(Permission::CREATE_SEASON);
+
+        $response = $this->actingAs($user)
+            ->fromRoute('seasons.create')
+            ->post(route('seasons.store'), [
+                'name' => str_repeat('a', 256),
+            ]);
+
+        $response->assertRedirectToRoute('seasons.create')
+            ->assertSessionHasErrors('name');
+    });
 });
 
-it('denies access to season create without permission', function (): void {
-    $user = User::factory()->create();
+describe('edit', function (): void {
+    it('renders season edit page', function (): void {
+        $user = createUserWithPermission(Permission::UPDATE_SEASON);
+        $season = Season::factory()->create();
 
-    $response = $this->actingAs($user)
-        ->get(route('seasons.create'));
+        $response = $this->actingAs($user)
+            ->fromRoute('seasons.index')
+            ->get(route('seasons.edit', $season));
 
-    $response->assertForbidden();
+        $response->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('season/Edit')
+                ->has('season'));
+    });
+
+    it('denies access without permission', function (): void {
+        $user = User::factory()->create();
+        $season = Season::factory()->create();
+
+        $response = $this->actingAs($user)
+            ->get(route('seasons.edit', $season));
+
+        $response->assertForbidden();
+    });
 });
 
-it('may create a season', function (): void {
-    $user = User::factory()->create();
-    $user->givePermissionTo(Permission::CREATE_SEASON->value);
+describe('update', function (): void {
+    it('may update a season', function (): void {
+        $user = createUserWithPermission(Permission::UPDATE_SEASON);
+        $season = Season::factory()->create(['name' => 'Old Season Name']);
 
-    $response = $this->actingAs($user)
-        ->fromRoute('seasons.create')
-        ->post(route('seasons.store'), [
-            'name' => '2024 Season',
-        ]);
+        $response = $this->actingAs($user)
+            ->fromRoute('seasons.edit', $season)
+            ->patch(route('seasons.update', $season), [
+                'name' => 'New Season Name',
+            ]);
 
-    $response->assertRedirectToRoute('seasons.index');
+        $response->assertRedirectToRoute('seasons.index');
+        expect($season->refresh()->name)->toBe('New Season Name');
+    });
 
-    expect(Season::query()->where('name', '2024 Season')->exists())->toBeTrue();
-});
+    it('denies season update without permission', function (): void {
+        $user = User::factory()->create();
+        $season = Season::factory()->create(['name' => 'Old Season Name']);
 
-it('denies season creation without permission', function (): void {
-    $user = User::factory()->create();
+        $response = $this->actingAs($user)
+            ->patch(route('seasons.update', $season), [
+                'name' => 'New Season Name',
+            ]);
 
-    $response = $this->actingAs($user)
-        ->post(route('seasons.store'), [
-            'name' => '2024 Season',
-        ]);
+        $response->assertForbidden();
+    });
 
-    $response->assertForbidden();
-});
+    it('validates required fields', function (): void {
+        $user = createUserWithPermission(Permission::UPDATE_SEASON);
+        $season = Season::factory()->create();
 
-it('requires name when creating season', function (): void {
-    $user = User::factory()->create();
-    $user->givePermissionTo(Permission::CREATE_SEASON->value);
+        $response = $this->actingAs($user)
+            ->fromRoute('seasons.edit', $season)
+            ->patch(route('seasons.update', $season), []);
 
-    $response = $this->actingAs($user)
-        ->fromRoute('seasons.create')
-        ->post(route('seasons.store'), []);
+        $response->assertRedirectToRoute('seasons.edit', $season)
+            ->assertSessionHasErrors(['name']);
 
-    $response->assertRedirectToRoute('seasons.create')
-        ->assertSessionHasErrors('name');
-});
+        $response = $this->actingAs($user)
+            ->fromRoute('seasons.edit', $season)
+            ->patch(route('seasons.update', $season), [
+                'name' => 'New Season Name',
+            ]);
 
-it('enforces max length for name when creating season', function (): void {
-    $user = User::factory()->create();
-    $user->givePermissionTo(Permission::CREATE_SEASON->value);
+        $response->assertSessionHasNoErrors();
+    });
 
-    $response = $this->actingAs($user)
-        ->fromRoute('seasons.create')
-        ->post(route('seasons.store'), [
-            'name' => str_repeat('a', 256),
-        ]);
+    it('enforces max length for name', function (): void {
+        $user = createUserWithPermission(Permission::UPDATE_SEASON);
+        $season = Season::factory()->create();
 
-    $response->assertRedirectToRoute('seasons.create')
-        ->assertSessionHasErrors('name');
-});
+        $response = $this->actingAs($user)
+            ->fromRoute('seasons.edit', $season)
+            ->patch(route('seasons.update', $season), [
+                'name' => str_repeat('a', 256),
+            ]);
 
-it('renders season edit page', function (): void {
-    $user = User::factory()->create();
-    $user->givePermissionTo(Permission::UPDATE_SEASON->value);
-
-    $season = Season::factory()->create();
-
-    $response = $this->actingAs($user)
-        ->fromRoute('seasons.index')
-        ->get(route('seasons.edit', $season));
-
-    $response->assertOk()
-        ->assertInertia(fn ($page) => $page
-            ->component('season/Edit')
-            ->has('season'));
-});
-
-it('denies access to season edit without permission', function (): void {
-    $user = User::factory()->create();
-    $season = Season::factory()->create();
-
-    $response = $this->actingAs($user)
-        ->get(route('seasons.edit', $season));
-
-    $response->assertForbidden();
-});
-
-it('may update a season', function (): void {
-    $user = User::factory()->create();
-    $user->givePermissionTo(Permission::UPDATE_SEASON->value);
-
-    $season = Season::factory()->create(['name' => 'Old Season Name']);
-
-    $response = $this->actingAs($user)
-        ->fromRoute('seasons.edit', $season)
-        ->patch(route('seasons.update', $season), [
-            'name' => 'New Season Name',
-        ]);
-
-    $response->assertRedirectToRoute('seasons.index');
-
-    expect($season->refresh()->name)->toBe('New Season Name');
-});
-
-it('denies season update without permission', function (): void {
-    $user = User::factory()->create();
-    $season = Season::factory()->create(['name' => 'Old Season Name']);
-
-    $response = $this->actingAs($user)
-        ->patch(route('seasons.update', $season), [
-            'name' => 'New Season Name',
-        ]);
-
-    $response->assertForbidden();
-});
-
-it('requires name when updating season', function (): void {
-    $user = User::factory()->create();
-    $user->givePermissionTo(Permission::UPDATE_SEASON->value);
-
-    $season = Season::factory()->create();
-
-    $response = $this->actingAs($user)
-        ->fromRoute('seasons.edit', $season)
-        ->patch(route('seasons.update', $season), []);
-
-    $response->assertRedirectToRoute('seasons.edit', $season)
-        ->assertSessionHasErrors('name');
-});
-
-it('enforces max length for name when updating season', function (): void {
-    $user = User::factory()->create();
-    $user->givePermissionTo(Permission::UPDATE_SEASON->value);
-
-    $season = Season::factory()->create();
-
-    $response = $this->actingAs($user)
-        ->fromRoute('seasons.edit', $season)
-        ->patch(route('seasons.update', $season), [
-            'name' => str_repeat('a', 256),
-        ]);
-
-    $response->assertRedirectToRoute('seasons.edit', $season)
-        ->assertSessionHasErrors('name');
+        $response->assertRedirectToRoute('seasons.edit', $season)
+            ->assertSessionHasErrors('name');
+    });
 });

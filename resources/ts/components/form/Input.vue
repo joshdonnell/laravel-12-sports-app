@@ -1,6 +1,6 @@
 <script setup lang="ts">
 interface Props {
-  value?: string
+  value?: string | number
   icon?: string
 }
 
@@ -9,7 +9,7 @@ const props = withDefaults(defineProps<Props>(), {
   icon: '',
 })
 
-const model = defineModel<string | null>({ required: false })
+const model = defineModel<string | number | null>({ required: false })
 
 defineOptions({
   inheritAttrs: false,

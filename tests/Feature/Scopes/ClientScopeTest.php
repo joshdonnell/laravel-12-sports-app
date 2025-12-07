@@ -7,9 +7,10 @@ use App\Models\Client;
 use App\Models\Scopes\SportScope;
 use App\Models\Tournament;
 use App\Models\User;
+use Database\Seeders\RoleAndPermissionSeeder;
 
 beforeEach(function (): void {
-    $this->seed(Database\Seeders\RoleAndPermissionSeeder::class);
+    $this->seed(RoleAndPermissionSeeder::class);
 });
 
 it('returns client of the given type when scoped to a model', function (): void {

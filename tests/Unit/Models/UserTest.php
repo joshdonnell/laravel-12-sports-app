@@ -2,14 +2,16 @@
 
 declare(strict_types=1);
 
+use App\Data\Shared\SelectData;
 use App\Enums\Role;
 use App\Models\Client;
 use App\Models\Scopes\SportScope;
 use App\Models\Sport;
 use App\Models\User;
+use Database\Seeders\RoleAndPermissionSeeder;
 
 beforeEach(function (): void {
-    $this->seed(Database\Seeders\RoleAndPermissionSeeder::class);
+    $this->seed(RoleAndPermissionSeeder::class);
 });
 
 test('the user model structure matches', function (): void {
@@ -41,6 +43,22 @@ test('a user belongs to a sport', function (): void {
     $user = User::factory()->create()->refresh();
 
     expect($user->sport)->toBeInstanceOf(Sport::class);
+});
+
+test('a user can only see clients of their sport', function (): void {
+    $sport = Sport::factory()->create();
+    $user = User::factory()->create([
+        'sport_id' => $sport->id,
+    ]);
+    Client::factory(3)->create([
+        'sport_id' => $sport->id,
+    ]);
+    Client::factory(3)->create();
+
+    $clients = $user->availableClients($user);
+
+    expect($clients)->toHaveCount(3)
+        ->and($clients[0])->toBeInstanceOf(SelectData::class);
 });
 
 test('a super admin user can see all users', function (): void {

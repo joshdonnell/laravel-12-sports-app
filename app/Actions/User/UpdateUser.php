@@ -11,6 +11,8 @@ use SensitiveParameter;
 
 final readonly class UpdateUser
 {
+    public function __construct(private DetachClientsMismatchingSport $detachClientsMismatchingSport) {}
+
     /**
      * @param  array<string, mixed>  $attributes
      */
@@ -20,11 +22,17 @@ final readonly class UpdateUser
             $attributes['password'] = $password;
         }
 
-        DB::transaction(function () use ($user, $attributes, $role): void {
+        $sportChanged = array_key_exists('sport_id', $attributes) && $user->sport_id !== $attributes['sport_id'];
+
+        DB::transaction(function () use ($user, $attributes, $role, $sportChanged): void {
             $user->update($attributes);
 
             if ($role instanceof Role) {
                 $user->syncRoles($role);
+            }
+
+            if ($sportChanged) {
+                $this->detachClientsMismatchingSport->handle($user);
             }
         });
     }

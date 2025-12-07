@@ -6,6 +6,7 @@ use App\Models\Player;
 use App\Models\PlayerTransfer;
 use App\Queries\Team\LatestPlayerTransferQuery;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 it('returns a query builder', function (): void {
     $query = new LatestPlayerTransferQuery();
@@ -37,5 +38,6 @@ it('returns an empty collection when no player transfer is found', function (): 
     $playerTransfer = $query->
     builder(Player::factory()->create())->get();
 
-    expect($playerTransfer)->toHaveCount(0);
+    expect($playerTransfer)->toBeInstanceOf(Collection::class)
+        ->and($playerTransfer)->toHaveCount(0);
 });

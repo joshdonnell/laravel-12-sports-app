@@ -68,31 +68,35 @@ const { searchQuery, isOpen, filteredOptions, handleChange, searchableSelect } =
       v-if="isOpen"
       class="absolute left-0 top-full z-10 mt-10 w-full rounded-[10px] bg-grey-100 p-20"
     >
-      <div class="flex h-[300px] flex-col gap-y-10 overflow-y-auto">
-        <button
-          v-for="(option, key) in filteredOptions"
-          :key="option.value"
-          role="option"
-          :value="option.value"
-          :aria-selected="model === option.value ? 'true' : 'false'"
-          :tabindex="key"
-          class="flex items-center justify-between gap-x-10"
-          :class="{
-            'text-grey-300': model !== option.value,
-            'text-black': model === option.value,
-          }"
-          @click="handleChange(option)"
-          @keyup.enter="handleChange(option)"
-        >
-          <span>{{ option.label }}</span>
+      <div class="flex max-h-[300px] flex-col gap-y-10 overflow-y-auto">
+        <template v-if="filteredOptions.length">
+          <button
+            v-for="(option, key) in filteredOptions"
+            :key="option.value"
+            role="option"
+            :value="option.value"
+            :aria-selected="model === option.value ? 'true' : 'false'"
+            :tabindex="key"
+            class="flex items-center justify-between gap-x-10"
+            :class="{
+              'text-grey-300': model !== option.value,
+              'text-black': model === option.value,
+            }"
+            @click="handleChange(option)"
+            @keyup.enter="handleChange(option)"
+          >
+            <span>{{ option.label }}</span>
 
-          <img
-            v-if="option.icon"
-            :src="option.icon"
-            :alt="`${option.label} Flag`"
-            class="h-25 w-25 shrink-0 object-cover"
-          />
-        </button>
+            <img
+              v-if="option.icon"
+              :src="option.icon"
+              :alt="`${option.label} Flag`"
+              class="h-25 w-25 shrink-0 object-cover"
+            />
+          </button>
+        </template>
+
+        <SharedNoResults v-else>No results found</SharedNoResults>
       </div>
     </div>
   </div>

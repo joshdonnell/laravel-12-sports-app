@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 use App\Enums\Permission;
 use App\Enums\Role;
+use App\Models\Client;
 use App\Models\Sport;
 use App\Models\User;
+use Database\Seeders\RoleAndPermissionSeeder;
 
 beforeEach(function (): void {
-    $this->seed(Database\Seeders\RoleAndPermissionSeeder::class);
+    $this->seed(RoleAndPermissionSeeder::class);
 });
 
 test('index', function (): void {
@@ -55,7 +57,7 @@ test('edit', function (): void {
     expect($user->can('edit', $userToEdit))->toBeFalse();
 
     $user->syncRoles([Role::SuperAdmin]);
-    expect($user->can('destroy', $userToEdit))->toBeTrue();
+    expect($user->can('edit', $userToEdit))->toBeTrue();
 
     $user->removeRole(Role::SuperAdmin);
 
@@ -79,7 +81,7 @@ test('update', function (): void {
     expect($user->can('update', $userToEdit))->toBeFalse();
 
     $user->syncRoles([Role::SuperAdmin]);
-    expect($user->can('destroy', $userToEdit))->toBeTrue();
+    expect($user->can('update', $userToEdit))->toBeTrue();
 
     $user->removeRole(Role::SuperAdmin);
 
@@ -113,4 +115,34 @@ test('destroy', function (): void {
     ]);
 
     expect($user->can('destroy', $userToEdit))->toBeTrue();
+});
+
+test('clients', function (): void {
+    $sport = Sport::factory()->create();
+    $user = User::factory()->create([
+        'sport_id' => $sport->id,
+    ]);
+    $userToEdit = User::factory()->create();
+    $clientToAssign = Client::factory()->create();
+
+    expect($user->can('clients', [$userToEdit, $clientToAssign]))->toBeFalse();
+
+    $user->givePermissionTo(Permission::UPDATE_USER);
+    expect($user->can('clients', [$userToEdit, $clientToAssign]))->toBeFalse();
+
+    $user->syncRoles([Role::SuperAdmin]);
+    expect($user->can('clients', [$userToEdit, $clientToAssign]))->toBeTrue();
+
+    $user->removeRole(Role::SuperAdmin);
+    expect($user->can('clients', [$userToEdit, $clientToAssign]))->toBeFalse();
+
+    $userToEdit->update([
+        'sport_id' => $sport->id,
+    ]);
+
+    $clientToAssign->update([
+        'sport_id' => $sport->id,
+    ]);
+
+    expect($user->can('clients', [$userToEdit, $clientToAssign]))->toBeTrue();
 });

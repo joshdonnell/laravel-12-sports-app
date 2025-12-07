@@ -1,17 +1,11 @@
 <script setup lang="ts">
 interface Props {
-  id: string
-  name: string
-  placeholder?: string
   value?: string
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  placeholder: '',
-  value: undefined,
-})
+const props = defineProps<Props>()
 
-const model = defineModel<string | null>({ required: true })
+const model = defineModel<string | null>({ required: false })
 
 onMounted(() => {
   if (props.value) {
@@ -22,10 +16,7 @@ onMounted(() => {
 
 <template>
   <textarea
-    :id="id"
     v-model="model"
-    :name="name"
     class="form-input form-textarea"
-    :placeholder="placeholder"
   />
 </template>

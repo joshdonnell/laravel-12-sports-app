@@ -7,6 +7,7 @@ import fixturesIcon from '@/../svg/fixtures.svg'
 import logoMarque from '@/../svg/logo-marque.svg'
 import logoName from '@/../svg/logo-name.svg'
 import playersIcon from '@/../svg/player.svg'
+import positionsIcon from '@/../svg/positions.svg'
 import roundsIcon from '@/../svg/rounds.svg'
 import scoringIcon from '@/../svg/scoring.svg'
 import seasonIcon from '@/../svg/season.svg'
@@ -18,16 +19,20 @@ import teamIcon from '@/../svg/teams.svg'
 import tournamentsIcon from '@/../svg/tournaments.svg'
 import usersIcon from '@/../svg/users.svg'
 import venuesIcon from '@/../svg/venues.svg'
-import rulesIcon from '../../../svg/rules.svg'
-
 import { dashboard } from '@/routes'
+import clients from '@/routes/clients'
+import clubs from '@/routes/clubs'
+import positions from '@/routes/positions'
+import rounds from '@/routes/rounds'
 import seasons from '@/routes/seasons'
 import sports from '@/routes/sports'
 import users from '@/routes/users'
+import venues from '@/routes/venues'
 import { SharedData } from '@/types'
 import type { RouteDefinition } from '@/wayfinder'
 import { Link } from '@inertiajs/vue3'
 import gsap from 'gsap'
+import rulesIcon from '../../../svg/rules.svg'
 interface MenuItem {
   name: string
   icon: string
@@ -37,7 +42,12 @@ interface MenuItem {
   children?: MenuItem[]
 }
 
+const emit = defineEmits<{
+  (e: 'close-sidebar'): void
+}>()
+
 const useMenu = () => {
+  const loading = ref(false)
   const menuItems = ref<MenuItem[]>([
     {
       name: 'Dashboard',
@@ -65,7 +75,7 @@ const useMenu = () => {
         {
           name: 'Rounds',
           icon: roundsIcon,
-          link: '/',
+          link: rounds.index(),
           permission: 'list-rounds',
         },
       ],
@@ -91,7 +101,7 @@ const useMenu = () => {
         {
           name: 'Clubs',
           icon: clubsIcon,
-          link: '/',
+          link: clubs.index(),
           permission: 'list-clubs',
         },
         {
@@ -107,9 +117,15 @@ const useMenu = () => {
           permission: 'list-players',
         },
         {
+          name: 'Positions',
+          icon: positionsIcon,
+          link: positions.index(),
+          permission: 'list-positions',
+        },
+        {
           name: 'Venues',
           icon: venuesIcon,
-          link: '/',
+          link: venues.index(),
           permission: 'list-venues',
         },
       ],
@@ -170,19 +186,37 @@ const useMenu = () => {
         {
           name: 'API Clients',
           icon: clientsIcon,
-          link: '/',
+          link: clients.index(),
           permission: 'list-clients',
         },
       ],
     },
   ])
   const toggleChildren = (item: MenuItem) => {
-    if (!item.children || item.link) return
+    if (!item.children || item.link) {
+      handleClick(typeof item.link === 'object' ? item.link.url : item.link!)
+      return
+    }
 
     item.active = !item.active
   }
 
+  const handleClick = (link: string) => {
+    emit('close-sidebar')
+    closeAllInactiveSubMenus(link)
+  }
+
+  const closeAllInactiveSubMenus = (link: string) => {
+    menuItems.value.forEach((item) => {
+      if (!item.children?.length) return
+
+      item.active = item.children.some((child) => typeof child.link === 'object' && link.includes(child.link.url))
+    })
+  }
+
   const showChildren = (el: Element, done: () => void) => {
+    if (loading.value) return
+
     gsap
       .to(el, {
         duration: 0.2,
@@ -210,6 +244,8 @@ const useMenu = () => {
 
       item.active = item.children.some((child) => typeof child.link === 'object' && currentUrl.includes(child.link.url))
     })
+
+    loading.value = true
   })
 
   return {
@@ -217,12 +253,14 @@ const useMenu = () => {
     toggleChildren,
     showChildren,
     hideChildren,
+    handleClick,
+    loading,
   }
 }
 
 const page = usePage<SharedData>()
 const auth = page.props.auth
-const { menuItems, toggleChildren, showChildren, hideChildren } = useMenu()
+const { menuItems, toggleChildren, showChildren, hideChildren, handleClick, loading } = useMenu()
 </script>
 
 <template>
@@ -254,7 +292,7 @@ const { menuItems, toggleChildren, showChildren, hideChildren } = useMenu()
               v-bind="item.link ? { href: item.link } : {}"
               class="heading-md default-transition flex w-full items-center justify-between gap-x-10 px-10 py-10 text-black hover:bg-white hover:text-blue-200"
               :class="{
-                'rounded-[10px]': !item.children,
+                'rounded-[10px]': !item.children || !item.active,
                 'rounded-t-[10px]': item.children,
                 'bg-white': item.active,
                 'bg-white text-blue-300':
@@ -287,6 +325,7 @@ const { menuItems, toggleChildren, showChildren, hideChildren } = useMenu()
               <ul
                 v-if="item.children && item.active"
                 class="relative mb-10 mt-1 h-0 overflow-hidden rounded-b-[10px] bg-white opacity-0"
+                :class="{ 'h-auto opacity-100': loading && item.active }"
               >
                 <template v-if="!item.permission || auth.can[item.permission]">
                   <li
@@ -300,6 +339,7 @@ const { menuItems, toggleChildren, showChildren, hideChildren } = useMenu()
                       :class="{
                         'text-blue-300': child.link && typeof child.link === 'object' && page.url.includes(child.link.url),
                       }"
+                      @click="handleClick(typeof child.link === 'object' ? child.link.url : child.link!)"
                     >
                       <InlineSvg
                         class="w-15"

@@ -126,6 +126,7 @@ const {
         tag="label"
         :for="$attrs['id']"
         :class="{ 'is-disabled': model || existingUrl }"
+        @click="(model || existingUrl) && $event.preventDefault()"
       >
         Select File
       </BtnPrimary>
@@ -135,7 +136,6 @@ const {
         v-bind="$attrs"
         class="hidden"
         accept="image/png, image/jpeg, image/svg+xml"
-        :disabled="model || existingUrl"
         @change="handleFileBeingAdded($event)"
       />
     </div>
@@ -164,7 +164,7 @@ const {
 
       <button
         class="default-transition cursor-pointer text-red-error hover:opacity-80"
-        @click="handleFileRemove()"
+        @click.prevent="handleFileRemove()"
       >
         <InlineSvg
           :src="deleteIcon"

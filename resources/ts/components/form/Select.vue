@@ -1,7 +1,7 @@
 <script setup lang="ts">
 interface Props {
   options: Array<App.Data.Shared.SelectData>
-  value?: string | null
+  value?: string | number | null
   placeholder?: string | undefined
 }
 
@@ -10,7 +10,7 @@ const props = withDefaults(defineProps<Props>(), {
   placeholder: undefined,
 })
 
-const model = defineModel<string | null>({ required: false, default: '' })
+const model = defineModel<string | number | null>({ required: false, default: '' })
 
 onMounted(() => {
   if (props.value) {

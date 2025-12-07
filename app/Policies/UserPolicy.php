@@ -6,6 +6,7 @@ namespace App\Policies;
 
 use App\Enums\Permission;
 use App\Enums\Role;
+use App\Models\Client;
 use App\Models\User;
 
 final class UserPolicy
@@ -50,5 +51,14 @@ final class UserPolicy
         }
 
         return $model->sport()->is($user->sport) && $user->can(Permission::DELETE_USER);
+    }
+
+    public function clients(User $user, User $model, Client $client): bool
+    {
+        if ($user->hasRole(Role::SuperAdmin) && $user->can(Permission::UPDATE_USER)) {
+            return true;
+        }
+
+        return $model->sport()->is($user->sport) && $client->sport()->is($user->sport) && $user->can(Permission::UPDATE_USER);
     }
 }

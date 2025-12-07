@@ -7,6 +7,7 @@ namespace App\Http\Controllers\User;
 use App\Actions\User\CreateUser;
 use App\Actions\User\DeleteUser;
 use App\Actions\User\UpdateUser;
+use App\Data\Client\ClientData;
 use App\Data\User\UserData;
 use App\Enums\Role;
 use App\Http\Requests\User\CreateUserRequest;
@@ -45,7 +46,7 @@ final readonly class UserController
         );
     }
 
-    public function create(#[CurrentUser()] User $user, SharedInertiaData $sharedInertiaData): Response
+    public function create(SharedInertiaData $sharedInertiaData): Response
     {
         Gate::authorize('create', User::class);
 
@@ -63,21 +64,28 @@ final readonly class UserController
         $attributes['sport_id'] = $request->integer('sport_id', $user->sport_id);
         $role = $request->filled('role') ? Role::from($request->string('role')->value()) : Role::User;
 
-        $action->handle($attributes, $request->string('password')->value(), $role);
+        $newUser = $action->handle($attributes, $request->string('password')->value(), $role);
 
-        return to_route('users.index');
+        return to_route('users.edit', ['user' => $newUser->uuid]);
     }
 
-    public function edit(User $model, #[CurrentUser()] User $user, SharedInertiaData $sharedInertiaData): Response
+    public function edit(User $user, SharedInertiaData $sharedInertiaData): Response
     {
         Gate::authorize('edit', $user);
 
-        $model->load('roles:name');
+        $user->load('roles:name');
+        $clients = $user
+            ->clients()
+            ->with('sport')
+            ->paginate(config('app.defaults.pagination.limit'))
+            ->onEachSide(1);
 
         return Inertia::render('user/Edit', [
-            'user' => UserData::from($model),
+            'user' => UserData::from($user),
             'roles' => $sharedInertiaData->getAssignableRoles(),
             'sports' => Inertia::defer(fn (): ?array => $sharedInertiaData->getSports()),
+            'clients' => ClientData::collect($clients),
+            'availableClients' => Inertia::optional(fn (): array => $user->availableClients($user)),
         ]);
     }
 

@@ -38,7 +38,7 @@ watchDebounced(
   <Head title="Seasons" />
 
   <section class="season-index">
-    <SeasonsFilters v-model="search" />
+    <SeasonFilters v-model="search" />
 
     <SharedHero
       title="Seasons"

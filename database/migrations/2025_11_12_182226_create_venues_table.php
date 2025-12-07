@@ -14,7 +14,7 @@ return new class extends Migration
             $table->id();
             $table->uuid()->unique();
             $table->string('name');
-            $table->string('address')->nullable();
+            $table->longText('address')->nullable();
             $table->string('website')->nullable();
             $table->foreignId('sport_id')->constrained('sports');
             $table->unique(['sport_id', 'name']);

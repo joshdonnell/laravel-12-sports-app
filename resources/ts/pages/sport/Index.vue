@@ -38,7 +38,7 @@ watchDebounced(
   <Head title="Sports" />
 
   <section class="sport-index">
-    <SportsFilters v-model="search" />
+    <SportFilters v-model="search" />
 
     <SharedHero
       title="Sports"

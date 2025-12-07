@@ -6,11 +6,12 @@ use App\Actions\User\CreateUser;
 use App\Enums\Role;
 use App\Models\Sport;
 use App\Models\User;
+use Database\Seeders\RoleAndPermissionSeeder;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Event;
 
 beforeEach(function (): void {
-    $this->seed(Database\Seeders\RoleAndPermissionSeeder::class);
+    $this->seed(RoleAndPermissionSeeder::class);
 });
 
 it('creates a user', function (): void {

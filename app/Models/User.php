@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Data\Shared\SelectData;
 use App\Enums\Role;
 use App\Traits\HasUuidTrait;
 use Carbon\CarbonInterface;
@@ -95,6 +96,21 @@ final class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * @return array<SelectData>
+     */
+    public function availableClients(self $user): array
+    {
+        $clients = Client::query()
+            ->whereDoesntHave('users', function (Builder $query) use ($user): void {
+                $query->where('users.id', $user->id);
+            })
+            ->where('sport_id', $user->sport_id)
+            ->get();
+
+        return SelectData::pick('uuid', 'name', null, $clients->toArray());
+    }
+
+    /**
      * @param  Builder<User>  $query
      */
     public function scopeExcludeCurrentUser(Builder $query): void
@@ -106,6 +122,10 @@ final class User extends Authenticatable implements MustVerifyEmail
         $user = auth()->user();
 
         if (! $user) {
+            return;
+        }
+
+        if ($user->hasRole(Role::SuperAdmin) || $user->hasRole(Role::Admin)) {
             return;
         }
 

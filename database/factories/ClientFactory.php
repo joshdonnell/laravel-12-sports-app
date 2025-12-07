@@ -19,7 +19,7 @@ final class ClientFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->unique()->company(),
+            'name' => fake()->unique()->name(),
             'sport_id' => Sport::factory()->create(),
         ];
     }

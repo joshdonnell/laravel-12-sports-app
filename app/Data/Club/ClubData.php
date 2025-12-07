@@ -13,8 +13,8 @@ final class ClubData extends Data
     public function __construct(
         public string $uuid,
         public string $name,
-        public ?string $knownAs,
-        public ?string $officialName,
+        public ?string $known_as,
+        public ?string $official_name,
         public ?string $code,
         public ?string $logo,
         public ?string $bio,

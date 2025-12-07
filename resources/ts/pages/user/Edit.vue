@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import { update } from '@/routes/users'
-import { SharedData } from '@/types'
+import { Pagination, SharedData } from '@/types'
 
 interface Props {
   user: App.Data.User.UserData
   roles: App.Data.Shared.SelectData[]
   sports?: App.Data.Shared.SelectData[] | null
+  clients: Pagination<App.Data.Client.ClientData>
+  availableClients?: App.Data.Shared.SelectData[] | null
 }
 
 defineProps<Props>()
@@ -122,7 +124,7 @@ const auth = page.props.auth
           <FormSelect
             id="sport"
             :options="sports || []"
-            name="sport"
+            name="sport_id"
             required
             autocomplete="none"
             placeholder="Select a sport"
@@ -138,9 +140,21 @@ const auth = page.props.auth
           type="submit"
           :disabled="processing"
         >
-          {{ processing ? 'Saving...' : 'Update' }}
+          {{ processing ? 'Saving...' : 'Update User' }}
         </BtnPrimary>
       </div>
     </Form>
+
+    <SharedHero
+      title="User's API Clients"
+      description="Add and remove API client access for the user."
+      class="mt-40 xl:mt-60"
+    />
+
+    <UserClientsTable
+      :user-id="user.uuid"
+      :clients="clients"
+      :available-clients="availableClients"
+    />
   </section>
 </template>

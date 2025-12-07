@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Enums\Role;
 use App\Models\Client;
 use App\Models\Sport;
 use App\Models\User;
@@ -35,6 +36,8 @@ final class NetballSportSeeder extends Seeder
                         'email_verified_at' => now(),
                         'sport_id' => $netball->id,
                     ]);
+
+                    $user->assignRole(Role::SuperAdmin);
 
                     $user->clients()->attach($exampleClient);
                 }

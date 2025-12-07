@@ -26,7 +26,6 @@ final readonly class SeasonPolicy
 
     public function edit(User $user): bool
     {
-
         return $user->can(Permission::UPDATE_SEASON);
     }
 

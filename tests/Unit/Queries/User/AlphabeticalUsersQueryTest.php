@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Models\User;
 use App\Queries\User\AlphabeticalUsersQuery;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 it('returns a query builder', function (): void {
     $query = new AlphabeticalUsersQuery();
@@ -33,5 +34,6 @@ it('returns an empty collection when no users are found', function (): void {
     $query = new AlphabeticalUsersQuery();
     $sports = $query->builder()->get();
 
-    expect($sports)->toHaveCount(0);
+    expect($sports)->toBeInstanceOf(Collection::class)
+        ->and($sports)->toHaveCount(0);
 });

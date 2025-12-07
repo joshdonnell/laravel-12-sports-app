@@ -6,9 +6,10 @@ use App\Actions\User\UpdateUser;
 use App\Enums\Role;
 use App\Models\Sport;
 use App\Models\User;
+use Database\Seeders\RoleAndPermissionSeeder;
 
 beforeEach(function (): void {
-    $this->seed(Database\Seeders\RoleAndPermissionSeeder::class);
+    $this->seed(RoleAndPermissionSeeder::class);
 });
 
 it('updates a user', function (): void {

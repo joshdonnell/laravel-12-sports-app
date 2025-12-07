@@ -40,6 +40,10 @@ final class RoleAndPermissionSeeder extends Seeder
                 break;
             case Role::Admin->value:
                 $permissions = [
+                    Permission::LIST_CLIENTS,
+                    Permission::CREATE_CLIENT,
+                    Permission::UPDATE_CLIENT,
+
                     Permission::LIST_CLUBS,
                     Permission::CREATE_CLUB,
                     Permission::UPDATE_CLUB,

@@ -9,6 +9,7 @@ use Carbon\CarbonInterface;
 use Database\Factories\RoundFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -50,5 +51,13 @@ final class Round extends Model
     public function fixtures(): HasMany
     {
         return $this->hasMany(Fixture::class);
+    }
+
+    /**
+     * @return BelongsTo<Sport, $this>
+     */
+    public function sport(): BelongsTo
+    {
+        return $this->belongsTo(Sport::class);
     }
 }

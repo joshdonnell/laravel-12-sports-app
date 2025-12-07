@@ -15,7 +15,7 @@ it('creates a club', function (): void {
         'official_name' => 'Test Club',
         'code' => 'TC',
         'sport_id' => Sport::factory()->create()->id,
-    ]);
+    ], null);
 
     expect($club)->toBeInstanceOf(Club::class);
 });

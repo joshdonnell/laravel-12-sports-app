@@ -141,4 +141,22 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Images
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for image uploads.
+    |
+    */
+
+    'uploads' => [
+        'images' => [
+            'maxHeight' => env('APP_UPLOADS_IMAGES_MAX_HEIGHT', 5000),
+            'maxWidth' => env('APP_UPLOADS_IMAGES_MAX_WIDTH', 5000),
+
+            'maxFilesize' => env('APP_UPLOADS_IMAGES_MAX_FILESIZE', '10mb'),
+        ],
+    ],
+
 ];

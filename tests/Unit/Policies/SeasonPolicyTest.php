@@ -5,9 +5,10 @@ declare(strict_types=1);
 use App\Enums\Permission;
 use App\Models\Season;
 use App\Models\User;
+use Database\Seeders\RoleAndPermissionSeeder;
 
 beforeEach(function (): void {
-    $this->seed(Database\Seeders\RoleAndPermissionSeeder::class);
+    $this->seed(RoleAndPermissionSeeder::class);
 });
 
 test('index', function (): void {

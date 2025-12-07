@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Models\Fixture;
 use App\Models\Round;
+use App\Models\Sport;
 
 test('the round model structure matches', function (): void {
     $round = Round::factory()->create()->refresh();
@@ -29,4 +30,10 @@ test('a round has many fixtures', function (): void {
 
     expect($round->fixtures)->toHaveCount(3)
         ->and($round->fixtures->first())->toBeInstanceOf(Fixture::class);
+});
+
+test('a round belongs to a sport', function (): void {
+    $round = Round::factory()->create()->refresh();
+
+    expect($round->sport)->toBeInstanceOf(Sport::class);
 });

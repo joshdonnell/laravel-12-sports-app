@@ -118,7 +118,7 @@ const auth = page.props.auth
           <FormSelect
             id="sport"
             :options="sports || []"
-            name="sport"
+            name="sport_id"
             required
             autocomplete="none"
             placeholder="Select a sport"
@@ -133,7 +133,7 @@ const auth = page.props.auth
           type="submit"
           :disabled="processing"
         >
-          {{ processing ? 'Saving...' : 'Create' }}
+          {{ processing ? 'Saving...' : 'Create User' }}
         </BtnPrimary>
       </div>
     </Form>

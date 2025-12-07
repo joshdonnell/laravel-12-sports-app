@@ -13,9 +13,10 @@ return new class extends Migration
         Schema::create('positions', function (Blueprint $table): void {
             $table->id();
             $table->uuid()->unique();
-            $table->string('name')->unique();
+            $table->string('name');
             $table->string('known_as')->nullable();
             $table->foreignId('sport_id')->constrained('sports');
+            $table->unique(['sport_id', 'name']);
             $table->timestamps();
         });
     }

@@ -14,9 +14,9 @@ onClickOutside(sidebar, () => {
 <template>
   <section class="dashboard-layout min-h-svh flex w-full">
     <aside
-      class="default-transition invisible fixed left-0 top-0 z-50 h-svh w-full shrink-0 pt-10 opacity-0 xl:visible xl:w-[255px] xl:opacity-100"
+      class="default-transition pointer-events-none fixed left-0 top-0 z-50 h-svh w-full shrink-0 pt-10 opacity-0 xl:pointer-events-auto xl:w-[255px] xl:opacity-100"
       :class="{
-        'xl-max:visible xl-max:opacity-100': isOpenOnMobile,
+        'xl-max:pointer-events-auto xl-max:opacity-100': isOpenOnMobile,
       }"
     >
       <div class="absolute inset-0 bg-black/40 xl:hidden"></div>
@@ -25,9 +25,10 @@ onClickOutside(sidebar, () => {
         ref="sidebar"
         class="default-transition relative"
         :class="{
-          'left-0 xl-max:visible xl-max:opacity-100': isOpenOnMobile,
+          'left-0': isOpenOnMobile,
           '-left-[255px] xl:left-0': !isOpenOnMobile,
         }"
+        @close-sidebar="isOpenOnMobile = false"
       />
     </aside>
 

@@ -2,24 +2,61 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Requests\Clubs;
+namespace App\Http\Requests\Club;
 
+use App\Enums\Role;
+use App\Models\User;
+use App\Rules\ImageUpload;
 use Illuminate\Foundation\Http\FormRequest;
 
 final class CreateClubRequest extends FormRequest
 {
     /**
-     * @return array<string, array<int, string>>
+     * @return array<string, array<mixed>|string>
      */
     public function rules(): array
     {
-        return [
-            'name' => ['required', 'string', 'max:255'],
-            'known_as' => ['nullable', 'string', 'max:255'],
-            'official_name' => ['nullable', 'string', 'max:255'],
-            'code' => ['nullable', 'string', 'max:10'],
-            'logo' => ['nullable', 'string', 'max:255'],
-            'bio' => ['nullable', 'string'],
+        $user = $this->user();
+        assert($user instanceof User);
+
+        $rules = [
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+            'known_as' => [
+                'nullable', 'string',
+                'max:255',
+            ],
+            'official_name' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+            'code' => [
+                'nullable',
+                'string',
+                'max:10',
+            ],
+            'logo' => [
+                'nullable',
+                new ImageUpload,
+            ],
+            'bio' => [
+                'nullable',
+                'string',
+            ],
         ];
+
+        if ($user->hasRole(Role::SuperAdmin)) {
+            $rules['sport_id'] = [
+                'required',
+                'integer',
+                'exists:sports,id',
+            ];
+        }
+
+        return $rules;
     }
 }

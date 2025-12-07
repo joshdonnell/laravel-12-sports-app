@@ -8,22 +8,26 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const { total, itemsPerPage, previous, next, pages } = usePaginator(props.pagination)
+const paginator = ref(usePaginator(props.pagination))
+
+watchEffect(() => {
+  paginator.value = usePaginator(props.pagination)
+})
 </script>
 
 <template>
   <div
-    v-if="total > itemsPerPage"
+    v-if="paginator.total > paginator.itemsPerPage"
     class="shared-pagination mt-40"
   >
     <nav class="relative flex items-center gap-x-15">
       <component
-        :is="previous.isActive ? Link : 'span'"
-        :href="previous.url"
+        :is="paginator.previous.isActive ? Link : 'span'"
+        :href="paginator.previous.url"
         class="default-transition default-transition flex h-25 w-25 items-center justify-center rounded-[3px]"
         :class="{
-          'bg-grey-200 text-black hover:bg-blue-200 hover:text-white': previous.isActive,
-          'cursor-not-allowed bg-grey-100 text-grey-300': !previous.isActive,
+          'bg-grey-200 text-black hover:bg-blue-200 hover:text-white': paginator.previous.isActive,
+          'cursor-not-allowed bg-grey-100 text-grey-300': !paginator.previous.isActive,
         }"
       >
         <InlineSvg
@@ -34,7 +38,7 @@ const { total, itemsPerPage, previous, next, pages } = usePaginator(props.pagina
 
       <component
         :is="page.isActive ? Link : 'span'"
-        v-for="(page, key) in pages"
+        v-for="(page, key) in paginator.pages"
         :key="key"
         :href="page.url"
         class="copy default-transition text-black"
@@ -47,12 +51,12 @@ const { total, itemsPerPage, previous, next, pages } = usePaginator(props.pagina
       </component>
 
       <component
-        :is="next.isActive ? Link : 'span'"
-        :href="next.url"
+        :is="paginator.next.isActive ? Link : 'span'"
+        :href="paginator.next.url"
         class="default-transition default-transition flex h-25 w-25 items-center justify-center rounded-[3px]"
         :class="{
-          'bg-grey-200 text-black hover:bg-blue-200 hover:text-white': next.isActive,
-          'cursor-not-allowed bg-grey-100 text-grey-300': !next.isActive,
+          'bg-grey-200 text-black hover:bg-blue-200 hover:text-white': paginator.next.isActive,
+          'cursor-not-allowed bg-grey-100 text-grey-300': !paginator.next.isActive,
         }"
       >
         <InlineSvg

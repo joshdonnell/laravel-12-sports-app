@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Models\Season;
 use App\Queries\Season\LatestSeasonQuery;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 it('returns a query builder', function (): void {
     $query = new LatestSeasonQuery();
@@ -33,5 +34,6 @@ it('returns an empty collection when no season is found', function (): void {
     $query = new LatestSeasonQuery();
     $seasons = $query->builder()->get();
 
-    expect($seasons)->toHaveCount(0);
+    expect($seasons)->toBeInstanceOf(Collection::class)
+        ->and($seasons)->toHaveCount(0);
 });
